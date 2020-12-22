@@ -6,10 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import Unified from "./MyFirstElement";
 import Container from "./GitHubCards";
 import CurrencyElement from "./CurrencyElement";
+import HexOdd from "./HexagonElement";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div><CurrencyElement /></div>
+    <div><CurrencyElement /><HexOdd/></div>
   </React.StrictMode>,
   document.getElementById('root')
 );
