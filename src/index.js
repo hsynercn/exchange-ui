@@ -6,11 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import Unified from "./MyFirstElement";
 import Container from "./GitHubCards";
 import CurrencyElement from "./CurrencyElement";
-import HexOdd from "./HexagonElement";
+import PolygonSample from "./HexagonElement";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div><CurrencyElement /><HexOdd/></div>
+    <div><CurrencyElement /><PolygonSample/></div>
   </React.StrictMode>,
   document.getElementById('root')
 );
