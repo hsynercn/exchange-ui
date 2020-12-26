@@ -116,14 +116,12 @@ class HexagonShowcase extends React.Component {
     }
 }
 
-const numSides = 6
-const centerAng = 2 * Math.PI / numSides
 
 function angleToRadians(degs) {
     return degs * (Math.PI / 180);
 }
 
-function generatePoints(radius, offset, startAngle) {
+function generatePoints(numSides, radius, centerAng, offset, startAngle) {
     const startAng = angleToRadians(startAngle);
     const vertex = [];
     for (let i = 0; i < numSides; i++) {
@@ -153,8 +151,8 @@ function getEdgePoints(vertex) {
 
 function getDimensions(edges) {
     return {
-        xDim: edges.maxX - edges.minX,
-        yDim: edges.maxY - edges.minY
+        xDim: Math.ceil(edges.maxX - edges.minX),
+        yDim: Math.ceil(edges.maxY - edges.minY)
     };
 }
 
@@ -167,21 +165,48 @@ function getShiftedPositiveQuadrant(points, edges) {
     return shiftedPoints;
 }
 
-let generatedPoints = generatePoints(200, 0, 90);
-console.log("points:");
-console.log(generatedPoints);
-let edges = getEdgePoints(generatedPoints);
+class RegularConvexPolygon extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            radius: 70,
+            offset: 0,
+            startAngle: 90,
+            numSides: 6,
+            centerAng: 0,
+            generatedPoints: [],
+            minX: 0,
+            minY: 0,
+            maxX: 0,
+            maxY: 0,
+            xDim: 0,
+            yDim: 0,
+            polygonCoordinates: ""
+        };
+        this.state.centerAng = 2 * Math.PI / this.state.numSides;
 
-generatedPoints = getShiftedPositiveQuadrant(generatedPoints, edges);
-let dimensions = getDimensions(edges);
+        let generatedPoints = generatePoints(
+            this.state.numSides,
+            this.state.radius,
+            this.state.centerAng,
+            this.state.offset,
+            this.state.startAngle);
 
-console.log("polygon coordinates:");
-let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
-console.log(polygonCoordinates)
+        let edges = getEdgePoints(generatedPoints);
+        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, edges);
+        let dimensions = getDimensions(edges);
+        let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
 
-/*<polygon points="0.000001,140 300,210 170,250 123,234"/>*/
+        this.state.generatedPoints = generatedPoints;
+        this.state.minX = edges.minX;
+        this.state.minY = edges.minY;
+        this.state.maxX = edges.maxX;
+        this.state.maxY = edges.maxY;
+        this.state.xDim = dimensions.xDim;
+        this.state.yDim = dimensions.yDim;
+        this.state.polygonCoordinates = polygonCoordinates;
+    }
 
-class PolygonSample extends React.Component {
     render() {
         const bottomStyle = {
             fill: "lime",
@@ -190,17 +215,27 @@ class PolygonSample extends React.Component {
         };
         return (
             <div>
-                <svg height={dimensions.yDim} width={dimensions.xDim} style={bottomStyle}>
-                    <polygon points={polygonCoordinates}/>
+                <svg height={this.state.yDim} width={this.state.xDim} style={bottomStyle}>
+                    <polygon points={this.state.polygonCoordinates}/>
                 </svg>
-                <svg height={dimensions.yDim} width={dimensions.xDim}>
-                    <polygon points={polygonCoordinates}/>
+                <svg height={this.state.yDim} width={this.state.xDim} style={bottomStyle}>
+                    <polygon points={this.state.polygonCoordinates}/>
                 </svg>
-                <svg height={dimensions.yDim} width={dimensions.xDim}>
-                    <polygon points={polygonCoordinates}/>
+                <svg height={this.state.yDim} width={this.state.xDim} style={bottomStyle}>
+                    <polygon points={this.state.polygonCoordinates}/>
                 </svg>
             </div>
 
+        );
+    }
+}
+
+class PolygonSample extends React.Component {
+    render() {
+        return (
+            <div>
+                <RegularConvexPolygon/>
+            </div>
         );
     }
 }
