@@ -135,19 +135,14 @@ function generatePoints(radius, offset, startAngle) {
     return vertex;
 }
 
-function shiftPositiveQuadrant(vertex) {
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-    vertex.forEach(point => {
-        let pointX = point[0];
-        let pointY = point[1];
-        minX = (minX > pointX) ? pointX : minX;
-        maxX = (maxX < pointX) ? pointX : maxX;
-        minY = (minY > pointY) ? pointY : minY;
-        maxY = (maxY < pointY) ? pointY : maxY;
-    });
+function getEdgePoints(vertex) {
+    const arrayColumn = (arr, n) => arr.map(x => x[n]);
+    let xValues = arrayColumn(vertex, 0);
+    let yValues = arrayColumn(vertex, 1);
+    let maxX = Math.max(...xValues);
+    let maxY = Math.max(...yValues);
+    let minX = Math.min(...xValues);
+    let minY = Math.min(...yValues);
     return {
         minX: minX,
         minY: minY,
@@ -156,15 +151,29 @@ function shiftPositiveQuadrant(vertex) {
     };
 }
 
-let generatedPoints = generatePoints(200, 0, 66);
+function getDimensions(edges) {
+    return {
+        xDim: edges.maxX - edges.minX,
+        yDim: edges.maxY - edges.minY
+    };
+}
+
+function getShiftedPositiveQuadrant(points, edges) {
+    let shiftedPoints = JSON.parse(JSON.stringify(points));
+    shiftedPoints.map(pair => {
+        pair[0] += -1 * edges.minX;
+        pair[1] += -1 * edges.minY
+    });
+    return shiftedPoints;
+}
+
+let generatedPoints = generatePoints(200, 0, 90);
 console.log("points:");
 console.log(generatedPoints);
-let edges = shiftPositiveQuadrant(generatedPoints);
+let edges = getEdgePoints(generatedPoints);
 
-generatedPoints.map(pair => {
-    pair[0] += -1 * edges.minX;
-    pair[1] += -1 * edges.minY
-});
+generatedPoints = getShiftedPositiveQuadrant(generatedPoints, edges);
+let dimensions = getDimensions(edges);
 
 console.log("polygon coordinates:");
 let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
@@ -174,15 +183,20 @@ console.log(polygonCoordinates)
 
 class PolygonSample extends React.Component {
     render() {
+        const bottomStyle = {
+            fill: "lime",
+            stroke: '#42873f',
+            strokeWidth: 200 * 0.02,
+        };
         return (
             <div>
-                <svg height="500" width="500">
+                <svg height={dimensions.yDim} width={dimensions.xDim} style={bottomStyle}>
                     <polygon points={polygonCoordinates}/>
                 </svg>
-                <svg height="500" width="500">
+                <svg height={dimensions.yDim} width={dimensions.xDim}>
                     <polygon points={polygonCoordinates}/>
                 </svg>
-                <svg height="500" width="500">
+                <svg height={dimensions.yDim} width={dimensions.xDim}>
                     <polygon points={polygonCoordinates}/>
                 </svg>
             </div>
