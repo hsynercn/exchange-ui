@@ -36,6 +36,8 @@
     ]
   },
   "devDependencies": {
-    "axios": "^0.21.0"
+    "axios": "^0.21.0",
+    "eslint": "^7.16.0",
+    "eslint-plugin-react": "^7.21.5"
   }
 }

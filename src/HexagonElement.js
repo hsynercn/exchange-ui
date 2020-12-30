@@ -121,13 +121,13 @@ function angleToRadians(degs) {
     return degs * (Math.PI / 180);
 }
 
-function generatePoints(numSides, radius, centerAng, offset, startAngle) {
+function generatePoints(numSides, radius, centerAng, startAngle) {
     const startAng = angleToRadians(startAngle);
     const vertex = [];
     for (let i = 0; i < numSides; i++) {
         const ang = startAng + (i * centerAng);
-        let x = offset + (radius * Math.cos(ang));
-        let y = offset + (radius * Math.sin(ang));
+        let x = (radius * Math.cos(ang));
+        let y = (radius * Math.sin(ang));
         vertex.push([x, y]);
     }
     return vertex;
@@ -142,10 +142,10 @@ function getEdgePoints(vertex) {
     let minX = Math.min(...xValues);
     let minY = Math.min(...yValues);
     return {
-        minX: minX,
-        minY: minY,
-        maxX: maxX,
-        maxY: maxY
+        minX: Math.floor(minX),
+        minY: Math.floor(minY),
+        maxX: Math.ceil(maxX),
+        maxY: Math.ceil(maxY)
     };
 }
 
@@ -160,7 +160,7 @@ function getShiftedPositiveQuadrant(points, edges) {
     let shiftedPoints = JSON.parse(JSON.stringify(points));
     shiftedPoints.map(pair => {
         pair[0] += -1 * edges.minX;
-        pair[1] += -1 * edges.minY
+        pair[1] += -1 * edges.minY;
     });
     return shiftedPoints;
 }
@@ -170,11 +170,12 @@ class RegularConvexPolygon extends React.Component {
         super(props)
         this.state = {
             radius: 70,
-            offset: 0,
+            edgeOffsetRatio: 0.05,
             startAngle: 90,
             numSides: 6,
             centerAng: 0,
             generatedPoints: [],
+            edgeOffsetLen: 0,
             minX: 0,
             minY: 0,
             maxX: 0,
@@ -183,18 +184,26 @@ class RegularConvexPolygon extends React.Component {
             yDim: 0,
             polygonCoordinates: ""
         };
+        
         this.state.centerAng = 2 * Math.PI / this.state.numSides;
+        this.state.edgeOffsetLen = this.state.radius * this.state.edgeOffsetRatio / 2;
 
         let generatedPoints = generatePoints(
             this.state.numSides,
             this.state.radius,
             this.state.centerAng,
-            this.state.offset,
+            this.state.startAngle);
+
+        let generatedPointsOuter = generatePoints(
+            this.state.numSides,
+            this.state.radius + this.state.edgeOffsetLen,
+            this.state.centerAng,
             this.state.startAngle);
 
         let edges = getEdgePoints(generatedPoints);
-        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, edges);
-        let dimensions = getDimensions(edges);
+        let outerEdges = getEdgePoints(generatedPointsOuter);
+        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, outerEdges);
+        let dimensions = getDimensions(outerEdges);
         let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
 
         this.state.generatedPoints = generatedPoints;
@@ -211,7 +220,7 @@ class RegularConvexPolygon extends React.Component {
         const bottomStyle = {
             fill: "lime",
             stroke: '#42873f',
-            strokeWidth: 200 * 0.02,
+            strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
         };
         return (
             <div>
@@ -229,6 +238,7 @@ class RegularConvexPolygon extends React.Component {
         );
     }
 }
+
 
 class PolygonSample extends React.Component {
     render() {
