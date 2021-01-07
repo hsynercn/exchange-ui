@@ -1,0 +1,7 @@
+/*#demo .row:nth-child(1n+2) {
+    margin-top: -10.3%;
+}*/
+
+#demo .row:nth-child(even) :first-child {
+    margin-left: 16.666666667%;
+}

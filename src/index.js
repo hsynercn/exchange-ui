@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './demo.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Unified from "./MyFirstElement";
@@ -10,7 +11,7 @@ import PolygonSample from "./HexagonElement";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div><CurrencyElement /><PolygonSample/></div>
+    <div id="demo"><CurrencyElement /><PolygonSample/></div>
   </React.StrictMode>,
   document.getElementById('root')
 );
