@@ -169,7 +169,7 @@ class RegularConvexPolygon extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            radius: 70,
+            radius: 10,
             edgeOffsetRatio: 0.07,
             startAngle: 90,
             numSides: 6,
@@ -221,9 +221,10 @@ class RegularConvexPolygon extends React.Component {
 
     render() {
         const bottomStyle = {
-            fill: '#' + Math.floor(Math.random()*16777215).toString(16),
-            stroke: '#' + Math.floor(Math.random()*16777215).toString(16),
+            fill: '#' + Math.floor(Math.random() * 16777215).toString(16),
+            stroke: '#' + Math.floor(Math.random() * 16777215).toString(16),
             strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
+            verticalAlign: 'top',
         };
         return (
 
@@ -238,36 +239,77 @@ class RegularConvexPolygon extends React.Component {
 
 class PolygonSample extends React.Component {
 
-    state = {leftMargin: 0, topMargin: 0}
+    state = {leftMargin: 0, topMargin: 0, axialArray: [[1, 2]]}
     callbackFunction = (childData) => {
         let tempLeft = Math.floor(childData.xDim / 2);
-        let tempTop = Math.floor(childData.yDim / 4) + 6;
-        this.setState({leftMargin: tempLeft, topMargin: tempTop});
+        let tempTop = Math.floor(childData.yDim / 4);
+        //tempLeft = 0;
+        //tempTop = 0;
+
+
+        let length = 105;
+        let height = 79;
+        length = length % 2 == 1 ? length : length + 1;
+        height = height % 2 == 1 ? height : height + 1;
+
+        let originMinCoordinateX = -((length - 1) / 2);
+        let originMinCoordinateY = -((height - 1) / 2);
+
+        let topLeftCoordinateX = originMinCoordinateX + Math.floor(-originMinCoordinateY / 2);
+        let topLeftCoordinateY = originMinCoordinateY;
+
+        let tempStartX = topLeftCoordinateX;
+        let tempStartY = topLeftCoordinateY;
+
+        let axialArray = [];
+        for (let j = 0; j < height; j++) {
+            axialArray.push([]);
+            for (let i = 0; i < length; i++) {
+                axialArray[j].push((tempStartX + i - Math.floor(j / 2)) + "," + (tempStartY + j));
+            }
+        }
+
+        let debug = 19;
+        this.setState({leftMargin: tempLeft, topMargin: tempTop, axialArray: axialArray});
     }
 
     render() {
         return (
             <section>
+                <div></div>
                 {
-                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => {
-                            if (el % 2 == 0)
-                                return <div style={{
-                                    marginTop: -this.state.topMargin,
-                                    marginBottom: -this.state.topMargin
-                                }}>{
 
-                                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => <RegularConvexPolygon
-                                        parentCallback={this.callbackFunction}/>)
-                                }</div>
-                            else
+                    this.state.axialArray.map((row, index) => {
+                            if (index % 2 == 0)
+                                if (index == 0) {
+                                    return <div
+                                        style={{
+                                            marginBottom: -this.state.topMargin
+                                        }}>{
+                                        row.map((element, index) => <RegularConvexPolygon
+                                            parentCallback={this.callbackFunction}/>)
+                                    }</div>
+                                } else {
+                                    return <div style={{
+                                        marginTop: -this.state.topMargin,
+                                        marginBottom: -this.state.topMargin
+                                    }}>{
+
+                                        row.map((element, index) => <RegularConvexPolygon
+                                            parentCallback={this.callbackFunction}/>)
+                                    }</div>
+                                }
+                            else {
                                 return <div
                                     style={{
                                         marginLeft: this.state.leftMargin, marginTop: -this.state.topMargin,
                                         marginBottom: -this.state.topMargin
                                     }}>{
-                                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => <RegularConvexPolygon
+                                    row.map((element, index) => <RegularConvexPolygon
                                         parentCallback={this.callbackFunction}/>)
                                 }</div>
+                            }
+
                         }
                     )
                 }

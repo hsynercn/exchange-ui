@@ -11,7 +11,7 @@ import PolygonSample from "./HexagonElement";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div id="demo"><CurrencyElement /><PolygonSample/></div>
+    <div id="demo"><PolygonSample/></div>
   </React.StrictMode>,
   document.getElementById('root')
 );
