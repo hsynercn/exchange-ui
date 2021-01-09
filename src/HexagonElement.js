@@ -170,7 +170,7 @@ class RegularConvexPolygon extends React.Component {
         super(props)
         this.state = {
             radius: 70,
-            edgeOffsetRatio: 0.05,
+            edgeOffsetRatio: 0.07,
             startAngle: 90,
             numSides: 6,
             centerAng: 0,
@@ -221,8 +221,8 @@ class RegularConvexPolygon extends React.Component {
 
     render() {
         const bottomStyle = {
-            fill: "lime",
-            stroke: '#42873f',
+            fill: '#' + Math.floor(Math.random()*16777215).toString(16),
+            stroke: '#' + Math.floor(Math.random()*16777215).toString(16),
             strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
         };
         return (
@@ -241,7 +241,7 @@ class PolygonSample extends React.Component {
     state = {leftMargin: 0, topMargin: 0}
     callbackFunction = (childData) => {
         let tempLeft = Math.floor(childData.xDim / 2);
-        let tempTop = Math.floor(childData.yDim / 2) + 2;
+        let tempTop = Math.floor(childData.yDim / 4) + 6;
         this.setState({leftMargin: tempLeft, topMargin: tempTop});
     }
 
@@ -252,8 +252,8 @@ class PolygonSample extends React.Component {
                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => {
                             if (el % 2 == 0)
                                 return <div style={{
-                                    marginTop: -this.state.topMargin / 2,
-                                    marginBottom: -this.state.topMargin / 2
+                                    marginTop: -this.state.topMargin,
+                                    marginBottom: -this.state.topMargin
                                 }}>{
 
                                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => <RegularConvexPolygon
@@ -262,8 +262,8 @@ class PolygonSample extends React.Component {
                             else
                                 return <div
                                     style={{
-                                        marginLeft: this.state.leftMargin, marginTop: -this.state.topMargin / 2,
-                                        marginBottom: -this.state.topMargin / 2
+                                        marginLeft: this.state.leftMargin, marginTop: -this.state.topMargin,
+                                        marginBottom: -this.state.topMargin
                                     }}>{
                                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(el => <RegularConvexPolygon
                                         parentCallback={this.callbackFunction}/>)
