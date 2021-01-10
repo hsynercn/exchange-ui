@@ -1,121 +1,4 @@
 import React from "react";
-import Container from "./GitHubCards";
-
-class Left extends React.Component {
-    render() {
-        const leftStyle = {
-            float: "left",
-            width: 0,
-            borderRight: "30px solid #6C6",
-            borderTop: "52px solid transparent",
-            borderBottom: "52px solid transparent"
-        };
-        return (
-            <div style={leftStyle}></div>
-        );
-    }
-}
-
-class Middle extends React.Component {
-    render() {
-        const middleStyle = {
-            float: "left",
-            width: "60px",
-            height: "104px",
-            background: "#6C6"
-        };
-        return (
-            <div style={middleStyle}></div>
-        );
-    }
-}
-
-class Right extends React.Component {
-    render() {
-        const rightStyle = {
-            float: "left",
-            width: 0,
-            borderLeft: "30px solid #6C6",
-            borderTop: "52px solid transparent",
-            borderBottom: "52px solid transparent"
-        };
-        return (
-            <div style={rightStyle}></div>
-        );
-    }
-}
-
-class HexOdd extends React.Component {
-    render() {
-        return (<div><Left/><Middle/><Right/></div>);
-    }
-}
-
-class HorizontalHexagon extends React.Component {
-    render() {
-        const leftStyle = {
-            float: "left",
-            width: 0,
-            borderRight: "30px solid #6C6",
-            borderTop: "52px solid transparent",
-            borderBottom: "52px solid transparent"
-        };
-        const middleStyle = {
-            float: "left",
-            width: "60px",
-            height: "104px",
-            background: "#6C6"
-        };
-        const rightStyle = {
-            float: "left",
-            width: 0,
-            borderLeft: "30px solid #6C6",
-            borderTop: "52px solid transparent",
-            borderBottom: "52px solid transparent"
-        };
-        return (<div>
-            <div style={leftStyle}></div>
-            <div style={middleStyle}></div>
-            <div style={rightStyle}></div>
-        </div>);
-    }
-}
-
-class VerticalHexagon extends React.Component {
-    render() {
-        const topStyle = {
-            width: 0,
-            borderBottom: "30px solid #6C6",
-            borderLeft: "52px solid transparent",
-            borderRight: "52px solid transparent"
-        };
-        const middleStyle = {
-            width: "104px",
-            height: "60px",
-            background: "#6C6"
-        };
-        const bottomStyle = {
-            width: 0,
-            borderTop: "30px solid #6C6",
-            borderLeft: "52px solid transparent",
-            borderRight: "52px solid transparent"
-        };
-        return (<div>
-            <div style={topStyle}></div>
-            <div style={middleStyle}></div>
-            <div style={bottomStyle}></div>
-        </div>);
-    }
-}
-
-class HexagonShowcase extends React.Component {
-    render() {
-        return (<div>
-            <VerticalHexagon/>
-        </div>);
-    }
-}
-
 
 function angleToRadians(degs) {
     return degs * (Math.PI / 180);
@@ -169,7 +52,7 @@ class RegularConvexPolygon extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            radius: 10,
+            radius: 40,
             edgeOffsetRatio: 0.07,
             startAngle: 90,
             numSides: 6,
@@ -218,26 +101,33 @@ class RegularConvexPolygon extends React.Component {
         this.state.polygonCoordinates = polygonCoordinates;
 
 
-        this.state.fillColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
-        this.state.strokeColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        this.state.fillColor = this.props.colorSet.fillColor;
+        this.state.strokeColor = this.props.colorSet.strokeColor;
+        //this.state.strokeColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
 
         this.props.parentCallback(this.state);
     }
 
-    render() {
-        const bottomStyle = {
-            fill: this.state.fillColor,
-            stroke: this.state.strokeColor,
-            strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
-            verticalAlign: 'top',
-        };
-        return (
+    updateFillColor = (fillColor) => {
+        this.state.fillColor = fillColor;
+        this.setState(this.state);
+    }
 
-            <svg height={this.state.yDim} width={this.state.xDim} style={bottomStyle}>
+    updateStrokeColor = (strokeColor) => {
+        this.state.strokeColor = strokeColor;
+        this.setState(this.state);
+    }
+
+    render() {
+        return (
+            <svg height={this.state.yDim} width={this.state.xDim} style={{
+                fill: this.state.fillColor,
+                stroke: this.state.strokeColor,
+                strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
+                verticalAlign: 'top'
+            }}>
                 <polygon points={this.state.polygonCoordinates}/>
             </svg>
-
-
         );
     }
 }
@@ -247,12 +137,12 @@ class PolygonSample extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {leftMargin: 0, topMargin: 0, axialArray: [[]], axialMap: {}};
+        this.state = {leftMargin: 0, topMargin: 0, axialArray: [[]], axialMap: {}, axialColorMap: {}};
 
         //this.handler = this.handler.bind(this)
 
-        let length = 105;
-        let height = 53;
+        let length = 23;
+        let height = 15;
         length = length % 2 == 1 ? length : length + 1;
         height = height % 2 == 1 ? height : height + 1;
 
@@ -267,22 +157,46 @@ class PolygonSample extends React.Component {
 
         let axialArray = [];
         let axialMap = {};
+        let axialColorMap = {};
         for (let j = 0; j < height; j++) {
             axialArray.push([]);
             for (let i = 0; i < length; i++) {
                 let coordinateStr = (tempStartX + i - Math.floor(j / 2)) + "," + (tempStartY + j)
                 axialArray[j].push(coordinateStr);
                 axialMap[coordinateStr] = React.createRef();
+                axialColorMap[coordinateStr] = {
+                    fillColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
+                    strokeColor: '#' + Math.floor(Math.random() * 16777215).toString(16)
+                };
             }
         }
 
         this.state.axialArray = axialArray;
         this.state.axialMap = axialMap;
+        this.state.axialColorMap = axialColorMap;
+
+        this.state.lastRenderX = 0;
+        this.state.lastRenderY = 0;
     }
 
 
+    componentDidMount() {
+        this.interval = setInterval(() => {
+
+            let selectedRow = this.state.axialArray[Math.floor(Math.random() * this.state.axialArray.length)];
+            let selectedElement = selectedRow[Math.floor(Math.random() * selectedRow.length)];
+            let regularConvexPolygonRef = this.state.axialMap[selectedElement];
+            regularConvexPolygonRef.current.updateFillColor('#' + Math.floor(Math.random() * 16777215).toString(16));
+            regularConvexPolygonRef.current.updateStrokeColor('#' + Math.floor(Math.random() * 16777215).toString(16));
+        }, 10);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
     callbackFunction = (childData) => {
-        if(this.state.leftMargin == 0 && this.state.topMargin == 0) {
+        if (this.state.leftMargin == 0 && this.state.topMargin == 0) {
             let tempLeft = Math.floor(childData.xDim / 2);
             let tempTop = Math.floor(childData.yDim / 4);
 
@@ -309,7 +223,8 @@ class PolygonSample extends React.Component {
                                             marginBottom: -this.state.topMargin
                                         }}>{
                                         row.map((element, index) => <RegularConvexPolygon
-                                            parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}/>)
+                                            parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
+                                            colorSet={this.state.axialColorMap[element]}/>)
                                     }</div>
                                 } else {
                                     return <div style={{
@@ -318,7 +233,8 @@ class PolygonSample extends React.Component {
                                     }}>{
 
                                         row.map((element, index) => <RegularConvexPolygon
-                                            parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}/>)
+                                            parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
+                                            colorSet={this.state.axialColorMap[element]}/>)
                                     }</div>
                                 }
                             else {
@@ -328,7 +244,8 @@ class PolygonSample extends React.Component {
                                         marginBottom: -this.state.topMargin
                                     }}>{
                                     row.map((element, index) => <RegularConvexPolygon
-                                        parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}/>)
+                                        parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
+                                        colorSet={this.state.axialColorMap[element]}/>)
                                 }</div>
                             }
                         }
