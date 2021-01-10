@@ -103,17 +103,12 @@ class RegularConvexPolygon extends React.Component {
 
         this.state.fillColor = this.props.colorSet.fillColor;
         this.state.strokeColor = this.props.colorSet.strokeColor;
-        //this.state.strokeColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
 
         this.props.parentCallback(this.state);
     }
 
-    updateFillColor = (fillColor) => {
+    setColor = (fillColor, strokeColor) => {
         this.state.fillColor = fillColor;
-        this.setState(this.state);
-    }
-
-    updateStrokeColor = (strokeColor) => {
         this.state.strokeColor = strokeColor;
         this.setState(this.state);
     }
@@ -141,7 +136,7 @@ class PolygonSample extends React.Component {
 
         //this.handler = this.handler.bind(this)
 
-        let length = 23;
+        let length = 25;
         let height = 15;
         length = length % 2 == 1 ? length : length + 1;
         height = height % 2 == 1 ? height : height + 1;
@@ -186,9 +181,19 @@ class PolygonSample extends React.Component {
             let selectedRow = this.state.axialArray[Math.floor(Math.random() * this.state.axialArray.length)];
             let selectedElement = selectedRow[Math.floor(Math.random() * selectedRow.length)];
             let regularConvexPolygonRef = this.state.axialMap[selectedElement];
-            regularConvexPolygonRef.current.updateFillColor('#' + Math.floor(Math.random() * 16777215).toString(16));
-            regularConvexPolygonRef.current.updateStrokeColor('#' + Math.floor(Math.random() * 16777215).toString(16));
-        }, 10);
+
+            let d = new Date();
+            let n = d.getSeconds();
+
+            if(Math.floor(n / 10) % 2  == 0) {
+                let colorStr = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            } else {
+                let colorStr = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                let colorStr2 = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr2);
+            }
+        }, 1);
     }
 
     componentWillUnmount() {
@@ -214,7 +219,6 @@ class PolygonSample extends React.Component {
             <section>
                 <div></div>
                 {
-
                     this.state.axialArray.map((row, index) => {
                             if (index % 2 == 0)
                                 if (index == 0) {
