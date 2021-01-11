@@ -52,7 +52,7 @@ class RegularConvexPolygon extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            radius: 40,
+            radius: 50,
             edgeOffsetRatio: 0.07,
             startAngle: 90,
             numSides: 6,
@@ -127,6 +127,7 @@ class RegularConvexPolygon extends React.Component {
     }
 }
 
+
 class PolygonSample extends React.Component {
 
     constructor(props) {
@@ -136,8 +137,8 @@ class PolygonSample extends React.Component {
 
         //this.handler = this.handler.bind(this)
 
-        let length = 25;
-        let height = 15;
+        let length = 19;
+        let height = 19;
         length = length % 2 == 1 ? length : length + 1;
         height = height % 2 == 1 ? height : height + 1;
 
@@ -175,8 +176,43 @@ class PolygonSample extends React.Component {
     }
 
 
+    getNorthSequence(value) {
+        let sequence = [];
+
+        let startX = 1;
+        let startY = -2;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            x = startX;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(x + "," + y);
+                x++;
+                tmpCount++;
+            }
+            y--;
+        }
+
+        return sequence;
+    }
+
     componentDidMount() {
         this.interval = setInterval(() => {
+
+            let sequence1 = this.getNorthSequence(0.1);
+            let sequence2 = this.getNorthSequence(1.5);
+            let sequence3 = this.getNorthSequence(2.5);
+            let sequence4 = this.getNorthSequence(3.5);
+            let sequence5 = this.getNorthSequence(4.5);
+            let sequence6 = this.getNorthSequence(5.5);
+            let sequence7 = this.getNorthSequence(6.5);
+            let sequence8 = this.getNorthSequence(7.5);
 
             let selectedRow = this.state.axialArray[Math.floor(Math.random() * this.state.axialArray.length)];
             let selectedElement = selectedRow[Math.floor(Math.random() * selectedRow.length)];
@@ -185,7 +221,7 @@ class PolygonSample extends React.Component {
             let d = new Date();
             let n = d.getSeconds();
 
-            if(Math.floor(n / 10) % 2  == 0) {
+            if (Math.floor(n / 10) % 2 == 0) {
                 let colorStr = '#' + Math.floor(Math.random() * 16777215).toString(16);
                 regularConvexPolygonRef.current.setColor(colorStr, colorStr);
             } else {
