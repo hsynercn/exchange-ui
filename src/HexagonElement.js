@@ -179,8 +179,9 @@ class PolygonSample extends React.Component {
     getNorthSequence(value) {
         let sequence = [];
 
-        let startX = 1;
-        let startY = -2;
+        //TODO:we can change starting point
+        let startX = -2;
+        let startY = 4;
 
         let x = startX;
         let y = startY;
@@ -205,14 +206,7 @@ class PolygonSample extends React.Component {
     componentDidMount() {
         this.interval = setInterval(() => {
 
-            let sequence1 = this.getNorthSequence(0.1);
-            let sequence2 = this.getNorthSequence(1.5);
-            let sequence3 = this.getNorthSequence(2.5);
-            let sequence4 = this.getNorthSequence(3.5);
-            let sequence5 = this.getNorthSequence(4.5);
-            let sequence6 = this.getNorthSequence(5.5);
-            let sequence7 = this.getNorthSequence(6.5);
-            let sequence8 = this.getNorthSequence(7.5);
+
 
             let selectedRow = this.state.axialArray[Math.floor(Math.random() * this.state.axialArray.length)];
             let selectedElement = selectedRow[Math.floor(Math.random() * selectedRow.length)];
@@ -229,6 +223,14 @@ class PolygonSample extends React.Component {
                 let colorStr2 = '#' + Math.floor(Math.random() * 16777215).toString(16);
                 regularConvexPolygonRef.current.setColor(colorStr, colorStr2);
             }
+
+            let sequence = this.getNorthSequence(d.getSeconds() % 29);
+            sequence.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
         }, 1);
     }
 
