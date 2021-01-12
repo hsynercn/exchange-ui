@@ -134,7 +134,6 @@ class PolygonSample extends React.Component {
         super(props)
 
         this.state = {leftMargin: 0, topMargin: 0, axialArray: [[]], axialMap: {}, axialColorMap: {}};
-
         //this.handler = this.handler.bind(this)
 
         let length = 19;
@@ -166,7 +165,6 @@ class PolygonSample extends React.Component {
                 };
             }
         }
-
         this.state.axialArray = axialArray;
         this.state.axialMap = axialMap;
         this.state.axialColorMap = axialColorMap;
@@ -175,13 +173,154 @@ class PolygonSample extends React.Component {
         this.state.lastRenderY = 0;
     }
 
+    //TODO:Refactor this shit
+
+    getSouthEastSequence(value) {
+        let sequence = [];
+
+        //TODO:we can change starting point
+        let startX = -1;
+        let startY = -1;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            x = startX;
+            y = startY;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(-1*x + "," + -1*y);
+                x++;
+                y--;
+                tmpCount++;
+            }
+            startX--;
+        }
+
+        return sequence;
+    }
+
+    getNorthWestSequence(value) {
+        let sequence = [];
+
+        //TODO:we can change starting point
+        let startX = -1;
+        let startY = -1;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            x = startX;
+            y = startY;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(x + "," + y);
+                x++;
+                y--;
+                tmpCount++;
+            }
+            startX--;
+        }
+
+        return sequence;
+    }
+
+    getSouthWestSequence(value) {
+        let sequence = [];
+
+        //TODO:we can change starting point
+        let startX = 2;
+        let startY = -1;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            y = startY;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(-1*x + "," + -1*y);
+                tmpCount++;
+                y++;
+            }
+            x++;
+            startY--;
+        }
+
+        return sequence;
+    }
+
+    getNorthEastSequence(value) {
+        let sequence = [];
+
+        //TODO:we can change starting point
+        let startX = 2;
+        let startY = -1;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            y = startY;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(x + "," + y);
+                tmpCount++;
+                y++;
+            }
+            x++;
+            startY--;
+        }
+
+        return sequence;
+    }
+
+    getSouthSequence(value) {
+        let sequence = [];
+
+        //TODO:we can change starting point
+        let startX = 1;
+        let startY = -2;
+
+        let x = startX;
+        let y = startY;
+
+        let polygonCount = Math.ceil(value);
+        let tmpCount = 0;
+
+
+        for (let i = 1; tmpCount < polygonCount; i++) {
+            x = startX;
+            for (let j = 1; j<=i && tmpCount < polygonCount; j++) {
+                sequence.push(-1*x + "," + -1*y);
+                x++;
+                tmpCount++;
+            }
+            y--;
+        }
+        return sequence;
+    }
 
     getNorthSequence(value) {
         let sequence = [];
 
         //TODO:we can change starting point
-        let startX = -2;
-        let startY = 4;
+        let startX = 1;
+        let startY = -2;
 
         let x = startX;
         let y = startY;
@@ -224,12 +363,48 @@ class PolygonSample extends React.Component {
                 regularConvexPolygonRef.current.setColor(colorStr, colorStr2);
             }
 
-            let sequence = this.getNorthSequence(d.getSeconds() % 29);
-            sequence.map(element => {
+            let sequenceNorth = this.getNorthSequence(d.getSeconds() % 29);
+            sequenceNorth.map(element => {
                 let regularConvexPolygonRef = this.state.axialMap[element];
                 let colorStr = '#000000';
                 regularConvexPolygonRef.current.setColor(colorStr, colorStr);
             });
+
+            let sequenceSouth = this.getSouthSequence(d.getSeconds() % 29);
+            sequenceSouth.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
+            let sequenceNorthEast = this.getNorthEastSequence(d.getSeconds() % 29);
+            sequenceNorthEast.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
+            let sequenceSouthWest = this.getSouthWestSequence(d.getSeconds() % 29);
+            sequenceSouthWest.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
+            let sequenceNorthWestSequence = this.getNorthWestSequence(d.getSeconds() % 29);
+            sequenceNorthWestSequence.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
+            let sequenceSouthEast = this.getSouthEastSequence(d.getSeconds() % 29);
+            sequenceSouthEast.map(element => {
+                let regularConvexPolygonRef = this.state.axialMap[element];
+                let colorStr = '#000000';
+                regularConvexPolygonRef.current.setColor(colorStr, colorStr);
+            });
+
 
         }, 1);
     }
