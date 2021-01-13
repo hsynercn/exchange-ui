@@ -85,13 +85,26 @@ class RegularConvexPolygon extends React.Component {
             this.state.centerAng,
             this.state.startAngle);
 
+        let generatedPointsInner = generatePoints(
+            this.state.numSides,
+            this.state.radius * 0.5,
+            this.state.centerAng,
+            this.state.startAngle);
+
         let edges = getEdgePoints(generatedPoints);
         let outerEdges = getEdgePoints(generatedPointsOuter);
         generatedPoints = getShiftedPositiveQuadrant(generatedPoints, outerEdges);
         let dimensions = getDimensions(outerEdges);
+
+        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, outerEdges);
+
         let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
+        let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
+
+
 
         this.state.generatedPoints = generatedPoints;
+        this.state.generatedInnerPoints = polygonCoordinatesInner;
         this.state.minX = edges.minX;
         this.state.minY = edges.minY;
         this.state.maxX = edges.maxX;
@@ -99,6 +112,7 @@ class RegularConvexPolygon extends React.Component {
         this.state.xDim = dimensions.xDim;
         this.state.yDim = dimensions.yDim;
         this.state.polygonCoordinates = polygonCoordinates;
+        this.state.polygonCoordinatesInner = polygonCoordinatesInner;
 
 
         this.state.fillColor = this.props.colorSet.fillColor;
@@ -118,10 +132,15 @@ class RegularConvexPolygon extends React.Component {
             <svg height={this.state.yDim} width={this.state.xDim} style={{
                 verticalAlign: 'top'
             }}>
+
                 <polygon points={this.state.polygonCoordinates} style={{
                     fill: this.state.fillColor,
                     stroke: this.state.strokeColor,
                     strokeWidth: this.state.radius * this.state.edgeOffsetRatio,
+                    verticalAlign: 'top'
+                }}/>
+                <polygon points={this.state.polygonCoordinatesInner} style={{
+                    fill: '#ffffff',
                     verticalAlign: 'top'
                 }}/>
                 <text x="50%" y="54%" text-anchor="middle" font-family="Courier New"
@@ -142,6 +161,9 @@ const directions = {
     SOUTHEAST: "SOUTHEAST",
 }
 
+//TODO:find a good way to represent fault
+//TODO:adapt inner texts to this method
+//TODO:send a real request for currency data
 
 class PolygonSample extends React.Component {
 
@@ -252,13 +274,8 @@ class PolygonSample extends React.Component {
 
     componentDidMount() {
 
-        let selectedRow = this.state.axialArray[Math.floor(Math.random() * this.state.axialArray.length)];
-        let selectedElement = selectedRow[Math.floor(Math.random() * selectedRow.length)];
-        let regularConvexPolygonRef = this.state.axialMap[selectedElement];
-
         let bias = 5;
         let range = 5;
-
 
         let sequenceNorth = this.getSequence(1, -2, Math.random() * range + bias, directions.NORTH);
         sequenceNorth.map(element => {
