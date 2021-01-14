@@ -1,7 +1,7 @@
 import React from "react";
 
-function angleToRadians(degs) {
-    return degs * (Math.PI / 180);
+function angleToRadians(degree) {
+    return degree * (Math.PI / 180);
 }
 
 function generatePoints(numSides, radius, centerAng, startAngle) {
@@ -44,6 +44,7 @@ function getShiftedPositiveQuadrant(points, edges) {
     shiftedPoints.map(pair => {
         pair[0] += -1 * edges.minX;
         pair[1] += -1 * edges.minY;
+        return true;
     });
     return shiftedPoints;
 }
@@ -87,7 +88,7 @@ class RegularConvexPolygon extends React.Component {
 
         let generatedPointsInner = generatePoints(
             this.state.numSides,
-            this.state.radius * 0.5,
+            (this.state.radius + this.state.edgeOffsetLen) * Math.random() * Math.floor(Math.random() * Math.floor(2)),
             this.state.centerAng,
             this.state.startAngle);
 
@@ -100,7 +101,6 @@ class RegularConvexPolygon extends React.Component {
 
         let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
         let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
-
 
 
         this.state.generatedPoints = generatedPoints;
@@ -122,9 +122,7 @@ class RegularConvexPolygon extends React.Component {
     }
 
     setColor = (fillColor, strokeColor) => {
-        this.state.fillColor = fillColor;
-        this.state.strokeColor = strokeColor;
-        this.setState(this.state);
+        this.setState({fillColor: fillColor, strokeColor: strokeColor});
     }
 
     render() {
@@ -140,7 +138,7 @@ class RegularConvexPolygon extends React.Component {
                     verticalAlign: 'top'
                 }}/>
                 <polygon points={this.state.polygonCoordinatesInner} style={{
-                    fill: '#ffffff',
+                    fill: '#0038d6',
                     verticalAlign: 'top'
                 }}/>
                 <text x="50%" y="54%" text-anchor="middle" font-family="Courier New"
@@ -176,8 +174,8 @@ class PolygonSample extends React.Component {
 
         let length = 27;
         let height = 19;
-        length = length % 2 == 1 ? length : length + 1;
-        height = height % 2 == 1 ? height : height + 1;
+        length = length % 2 === 1 ? length : length + 1;
+        height = height % 2 === 1 ? height : height + 1;
 
         let originMinCoordinateX = -((length - 1) / 2);
         let originMinCoordinateY = -((height - 1) / 2);
@@ -220,7 +218,7 @@ class PolygonSample extends React.Component {
         let polygonCount = Math.ceil(value);
         let tmpCount = 0;
 
-        let factor = 1;
+        let factor;
         if (direction === directions.NORTH || direction === directions.NORTHEAST || direction === directions.NORTHWEST) {
             factor = 1;
         } else {
@@ -280,31 +278,37 @@ class PolygonSample extends React.Component {
         let sequenceNorth = this.getSequence(1, -2, Math.random() * range + bias, directions.NORTH);
         sequenceNorth.map(element => {
             this.state.axialMap[element].current.setColor('#ea0000', '#ea0000');
+            return true;
         });
 
         let sequenceSouth = this.getSequence(-1, 2, Math.random() * range + bias, directions.SOUTH);
         sequenceSouth.map(element => {
             this.state.axialMap[element].current.setColor('#0020c4', '#0020c4');
+            return true;
         });
 
         let sequenceNorthEast = this.getSequence(2, -1, Math.random() * range + bias, directions.NORTHEAST);
         sequenceNorthEast.map(element => {
             this.state.axialMap[element].current.setColor('#9400ff', '#9400ff');
+            return true;
         });
 
         let sequenceSouthWest = this.getSequence(-2, 1, Math.random() * range + bias, directions.SOUTHWEST);
         sequenceSouthWest.map(element => {
             this.state.axialMap[element].current.setColor('#5dff00', '#5dff00');
+            return true;
         });
 
         let sequenceNorthWestSequence = this.getSequence(-1, -1, Math.random() * range + bias, directions.NORTHWEST);
         sequenceNorthWestSequence.map(element => {
             this.state.axialMap[element].current.setColor('#00daf1', '#00daf1');
+            return true;
         });
 
         let sequenceSouthEast = this.getSequence(1, 1, Math.random() * range + bias, directions.SOUTHEAST);
         sequenceSouthEast.map(element => {
             this.state.axialMap[element].current.setColor('#00ffa6', '#00ffa6');
+            return true;
         });
     }
 
@@ -324,7 +328,7 @@ class PolygonSample extends React.Component {
             axialMap: this.state.axialMap
         });
 
-        if (this.state.leftMargin == 0 && this.state.topMargin == 0) {
+        if (this.state.leftMargin === 0 && this.state.topMargin === 0) {
             let tempLeft = Math.floor(childData.xDim / 2);
             let tempTop = Math.floor(childData.yDim / 4);
 
@@ -340,16 +344,15 @@ class PolygonSample extends React.Component {
     render() {
         return (
             <section>
-                <div></div>
                 {
                     this.state.axialArray.map((row, index) => {
-                            if (index % 2 == 0)
-                                if (index == 0) {
+                            if (index % 2 === 0)
+                                if (index === 0) {
                                     return <div
                                         style={{
                                             marginBottom: -this.state.topMargin
                                         }}>{
-                                        row.map((element, index) => <RegularConvexPolygon
+                                        row.map((element) => <RegularConvexPolygon
                                             parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
                                             colorSet={this.state.axialColorMap[element]}/>)
                                     }</div>
@@ -359,7 +362,7 @@ class PolygonSample extends React.Component {
                                         marginBottom: -this.state.topMargin
                                     }}>{
 
-                                        row.map((element, index) => <RegularConvexPolygon
+                                        row.map((element) => <RegularConvexPolygon
                                             parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
                                             colorSet={this.state.axialColorMap[element]}/>)
                                     }</div>
@@ -370,7 +373,7 @@ class PolygonSample extends React.Component {
                                         marginLeft: this.state.leftMargin, marginTop: -this.state.topMargin,
                                         marginBottom: -this.state.topMargin
                                     }}>{
-                                    row.map((element, index) => <RegularConvexPolygon
+                                    row.map((element) => <RegularConvexPolygon
                                         parentCallback={this.callbackFunction} ref={this.state.axialMap[element]}
                                         colorSet={this.state.axialColorMap[element]}/>)
                                 }</div>
