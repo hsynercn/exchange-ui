@@ -60,15 +60,16 @@ class RegularConvexPolygon extends React.Component {
             centerAng: 0,
             generatedPoints: [],
             edgeOffsetLen: 0,
-            minX: 0,
-            minY: 0,
-            maxX: 0,
-            maxY: 0,
+            edges: {},
             xDim: 0,
             yDim: 0,
             polygonCoordinates: "",
+            polygonCoordinatesInner: "",
             fillColor: "",
-            strokeColor: ""
+            strokeColor: "",
+            text: "",
+            innerPolygonRatio: 0.0,
+            innerFillColor: "",
         };
 
         this.state.centerAng = 2 * Math.PI / this.state.numSides;
@@ -88,16 +89,16 @@ class RegularConvexPolygon extends React.Component {
 
         let generatedPointsInner = generatePoints(
             this.state.numSides,
-            (this.state.radius + this.state.edgeOffsetLen) * Math.random() * Math.floor(Math.random() * Math.floor(2)),
+            (this.state.radius + this.state.edgeOffsetLen) * this.state.innerPolygonRatio,
             this.state.centerAng,
             this.state.startAngle);
 
-        let edges = getEdgePoints(generatedPoints);
-        let outerEdges = getEdgePoints(generatedPointsOuter);
-        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, outerEdges);
-        let dimensions = getDimensions(outerEdges);
+        this.state.edges = getEdgePoints(generatedPointsOuter);
 
-        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, outerEdges);
+        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, this.state.edges);
+        let dimensions = getDimensions(this.state.edges);
+
+        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
 
         let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
         let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
@@ -105,15 +106,11 @@ class RegularConvexPolygon extends React.Component {
 
         this.state.generatedPoints = generatedPoints;
         this.state.generatedInnerPoints = polygonCoordinatesInner;
-        this.state.minX = edges.minX;
-        this.state.minY = edges.minY;
-        this.state.maxX = edges.maxX;
-        this.state.maxY = edges.maxY;
+
         this.state.xDim = dimensions.xDim;
         this.state.yDim = dimensions.yDim;
         this.state.polygonCoordinates = polygonCoordinates;
         this.state.polygonCoordinatesInner = polygonCoordinatesInner;
-
 
         this.state.fillColor = this.props.colorSet.fillColor;
         this.state.strokeColor = this.props.colorSet.strokeColor;
@@ -121,8 +118,20 @@ class RegularConvexPolygon extends React.Component {
         this.props.parentCallback(this.state);
     }
 
-    setColor = (fillColor, strokeColor) => {
-        this.setState({fillColor: fillColor, strokeColor: strokeColor});
+    setColor = (fillColor, strokeColor, innerFillColor) => {
+        this.setState({fillColor: fillColor, strokeColor: strokeColor, innerFillColor: innerFillColor});
+    }
+
+    setInnerPolygonRatio = (ratio) => {
+
+        let generatedPointsInner = generatePoints(
+            this.state.numSides,
+            (this.state.radius + this.state.edgeOffsetLen) * ratio,
+            this.state.centerAng,
+            this.state.startAngle);
+        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
+        let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
+        this.setState({innerPolygonRatio: ratio, polygonCoordinatesInner: polygonCoordinatesInner});
     }
 
     render() {
@@ -138,11 +147,12 @@ class RegularConvexPolygon extends React.Component {
                     verticalAlign: 'top'
                 }}/>
                 <polygon points={this.state.polygonCoordinatesInner} style={{
-                    fill: '#0038d6',
+                    fill: this.state.innerFillColor,
                     verticalAlign: 'top'
                 }}/>
-                <text x="50%" y="54%" text-anchor="middle" font-family="Courier New"
-                      fill="black" fontWeight="bold" font-size="14">10.0
+                <text x="50%" y="54%" textAnchor="middle" fontFamily="Courier New"
+                      fill="black" fontWeight="bold" fontSize="14">
+                    {this.state.text}
                 </text>
             </svg>
         );
@@ -159,7 +169,7 @@ const directions = {
     SOUTHEAST: "SOUTHEAST",
 }
 
-//TODO:find a good way to represent fault
+//TODO:we can use inner polygons for float numbers
 //TODO:adapt inner texts to this method
 //TODO:send a real request for currency data
 
@@ -270,44 +280,77 @@ class PolygonSample extends React.Component {
     }
 
 
+
     componentDidMount() {
 
         let bias = 5;
         let range = 5;
 
-        let sequenceNorth = this.getSequence(1, -2, Math.random() * range + bias, directions.NORTH);
+        let innerFiller = '#0020c4';
+
+
+        let displayValueArray1 = Math.random() * range + bias;
+
+        let sequenceNorth = this.getSequence(1, -2, displayValueArray1, directions.NORTH);
+
         sequenceNorth.map(element => {
-            this.state.axialMap[element].current.setColor('#ea0000', '#ea0000');
+            if(displayValueArray1 <= 1.0) {
+                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#ea0000');
+                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray1);
+            } else {
+                this.state.axialMap[element].current.setColor('#ea0000', '#ea0000', '#ea0000');
+                displayValueArray1--;
+            }
             return true;
         });
 
-        let sequenceSouth = this.getSequence(-1, 2, Math.random() * range + bias, directions.SOUTH);
+        let displayValueArray2 = Math.random() * range + bias;
+
+        let sequenceSouth = this.getSequence(-1, 2, displayValueArray2, directions.SOUTH);
         sequenceSouth.map(element => {
-            this.state.axialMap[element].current.setColor('#0020c4', '#0020c4');
+            if(displayValueArray2 <= 1.0) {
+                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#2549fd');
+                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray2);
+            } else {
+                this.state.axialMap[element].current.setColor('#2549fd', '#2549fd', '#2549fd');
+                displayValueArray2--;
+            }
             return true;
         });
 
-        let sequenceNorthEast = this.getSequence(2, -1, Math.random() * range + bias, directions.NORTHEAST);
+        let displayValueArray3 = Math.random() * range + bias;
+
+        let sequenceNorthEast = this.getSequence(2, -1, displayValueArray3, directions.NORTHEAST);
         sequenceNorthEast.map(element => {
-            this.state.axialMap[element].current.setColor('#9400ff', '#9400ff');
+
+            if(displayValueArray3 <= 1.0) {
+                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#9400ff');
+                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray3);
+            } else {
+                this.state.axialMap[element].current.setColor('#9400ff', '#9400ff', '#9400ff');
+                displayValueArray3--;
+            }
             return true;
         });
 
         let sequenceSouthWest = this.getSequence(-2, 1, Math.random() * range + bias, directions.SOUTHWEST);
         sequenceSouthWest.map(element => {
-            this.state.axialMap[element].current.setColor('#5dff00', '#5dff00');
+            this.state.axialMap[element].current.setColor('#5dff00', '#5dff00', innerFiller);
+            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
             return true;
         });
 
         let sequenceNorthWestSequence = this.getSequence(-1, -1, Math.random() * range + bias, directions.NORTHWEST);
         sequenceNorthWestSequence.map(element => {
-            this.state.axialMap[element].current.setColor('#00daf1', '#00daf1');
+            this.state.axialMap[element].current.setColor('#00daf1', '#00daf1', innerFiller);
+            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
             return true;
         });
 
         let sequenceSouthEast = this.getSequence(1, 1, Math.random() * range + bias, directions.SOUTHEAST);
         sequenceSouthEast.map(element => {
-            this.state.axialMap[element].current.setColor('#00ffa6', '#00ffa6');
+            this.state.axialMap[element].current.setColor('#00ffa6', '#00ffa6', innerFiller);
+            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
             return true;
         });
     }
