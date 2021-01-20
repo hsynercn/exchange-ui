@@ -311,75 +311,24 @@ class PolygonSample extends React.Component {
         let bias = 5;
         let range = 5;
 
-        let innerFiller = '#0020c4';
+        this.renderDirection(1, -2, Math.random() * range + bias, directions.NORTH, this.state.maxPolygonGroupMemberCount,
+            '#ffffff', '#e2e2e2', '#ea0000', this.state.axialMap);
 
-        let displayValueArray1 = Math.random() * range + bias;
+        this.renderDirection(-1, 2, Math.random() * range + bias, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+            '#ffffff', '#e2e2e2', '#2549fd', this.state.axialMap);
 
-        let sequenceNorth = this.getSequence(1, -2, displayValueArray1, directions.NORTH);
-
-        sequenceNorth.map(element => {
-            if (displayValueArray1 <= 1.0) {
-                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#ea0000');
-                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray1);
-            } else {
-                this.state.axialMap[element].current.setColor('#ea0000', '#ea0000', '#ea0000');
-                displayValueArray1--;
-            }
-            return true;
-        });
-
-        let displayValueArray2 = Math.random() * range + bias;
-
-        let sequenceSouth = this.getSequence(-1, 2, displayValueArray2, directions.SOUTH);
-        sequenceSouth.map(element => {
-            if (displayValueArray2 <= 1.0) {
-                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#2549fd');
-                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray2);
-            } else {
-                this.state.axialMap[element].current.setColor('#2549fd', '#2549fd', '#2549fd');
-                displayValueArray2--;
-            }
-            return true;
-        });
-
-        let displayValueArray3 = Math.random() * range + bias;
-
-        let sequenceNorthEast = this.getSequence(2, -1, displayValueArray3, directions.NORTHEAST);
-        sequenceNorthEast.map(element => {
-
-            if (displayValueArray3 <= 1.0) {
-                this.state.axialMap[element].current.setColor('#ffffff', '#e2e2e2', '#9400ff');
-                this.state.axialMap[element].current.setInnerPolygonRatio(displayValueArray3);
-            } else {
-                this.state.axialMap[element].current.setColor('#9400ff', '#9400ff', '#9400ff');
-                displayValueArray3--;
-            }
-            return true;
-        });
+        this.renderDirection(2, -1, Math.random() * range + bias, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
+            '#ffffff', '#e2e2e2', '#9400ff', this.state.axialMap);
 
         this.renderDirection(-2, 1, Math.random() * range + bias, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
             '#ffffff', '#e2e2e2', '#5dff00', this.state.axialMap);
 
-        /*let sequenceSouthWest = this.getSequence(-2, 1, Math.random() * range + bias, directions.SOUTHWEST);
-        sequenceSouthWest.map(element => {
-            this.state.axialMap[element].current.setColor('#5dff00', '#5dff00', innerFiller);
-            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
-            return true;
-        });*/
+        this.renderDirection(-1, -1, Math.random() * range + bias, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+            '#ffffff', '#e2e2e2', '#00daf1', this.state.axialMap);
 
-        let sequenceNorthWestSequence = this.getSequence(-1, -1, Math.random() * range + bias, directions.NORTHWEST);
-        sequenceNorthWestSequence.map(element => {
-            this.state.axialMap[element].current.setColor('#00daf1', '#00daf1', innerFiller);
-            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
-            return true;
-        });
+        this.renderDirection(1, 1, Math.random() * range + bias, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+            '#ffffff', '#e2e2e2', '#00ffa6', this.state.axialMap);
 
-        let sequenceSouthEast = this.getSequence(1, 1, Math.random() * range + bias, directions.SOUTHEAST);
-        sequenceSouthEast.map(element => {
-            this.state.axialMap[element].current.setColor('#00ffa6', '#00ffa6', innerFiller);
-            this.state.axialMap[element].current.setInnerPolygonRatio(Math.random());
-            return true;
-        });
     }
 
     componentWillUnmount() {
