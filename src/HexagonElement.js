@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 
 function angleToRadians(degree) {
     return degree * (Math.PI / 180);
@@ -118,6 +119,10 @@ class RegularConvexPolygon extends React.Component {
         this.props.parentCallback(this.state);
     }
 
+    setText = (text) => {
+        this.setState({text: text});
+    }
+
     setColor = (fillColor, strokeColor, innerFillColor) => {
         this.setState({fillColor: fillColor, strokeColor: strokeColor, innerFillColor: innerFillColor});
     }
@@ -177,15 +182,15 @@ class PolygonSample extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            polygonCountLength: 27,
-            polygonCountHeight: 19,
+            polygonCountLength: 17,
+            polygonCountHeight: 13,
             leftMargin: 0,
             topMargin: 0,
             axialArray: [[]],
             axialMap: {},
             defaultUnitPolygon: {
-                radius: 30,
-                edgeOffsetRatio: 0.09,
+                radius: 40,
+                edgeOffsetRatio: 0.03,
                 startAngle: 90,
                 numSides: 6,
                 fillColor: '#ffffff',
@@ -292,14 +297,17 @@ class PolygonSample extends React.Component {
 
         let stepValue = 1.0;
         let segmentCount = Math.ceil(displayValue / stepValue);
-
+        let sum = 0;
         segmentCount = segmentCount > maxPolygonGroupMemberCount ? maxPolygonGroupMemberCount : segmentCount;
 
         for (let i = 0; i < (segmentCount); i++) {
             if (displayValue <= 1.0) {
-                axialMap[sequence[i]].current.setColor(fillColor, strokeColor, innerFillColor);
+                axialMap[sequence[i]].current.setText((sum + displayValue).toFixed(2));
+                axialMap[sequence[i]].current.setColor(fillColor, innerFillColor, innerFillColor);
                 axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue);
             } else {
+                sum += stepValue;
+                axialMap[sequence[i]].current.setText(sum.toFixed(1));
                 axialMap[sequence[i]].current.setColor(innerFillColor, innerFillColor, innerFillColor);
                 displayValue--;
             }
@@ -308,26 +316,48 @@ class PolygonSample extends React.Component {
 
     componentDidMount() {
 
-        let bias = 5;
-        let range = 5;
+        axios.get(`http://localhost:8080/currency`).then(response => {
+            let currencyMap = response.data;
+            this.state.axialMap["0,0"].current.setText(currencyMap.base);
 
-        this.renderDirection(1, -2, Math.random() * range + bias, directions.NORTH, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#ea0000', this.state.axialMap);
+            let bias = 5;
+            let range = 5;
 
-        this.renderDirection(-1, 2, Math.random() * range + bias, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#2549fd', this.state.axialMap);
+            let rateMap = {};
 
-        this.renderDirection(2, -1, Math.random() * range + bias, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#9400ff', this.state.axialMap);
+            currencyMap.rates.forEach(rate => {
+                rateMap[rate.entity] = rate
+            });
 
-        this.renderDirection(-2, 1, Math.random() * range + bias, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#5dff00', this.state.axialMap);
+            let unitedStatesDollar = rateMap["USD"];
+            let euro = rateMap["EUR"];
+            let poundSterling = rateMap["GBP"];
+            let canadianDollar = rateMap["CAD"];
+            let swissFranc = rateMap["CHF"];
+            let newZealandDollar = rateMap["NZD"];
 
-        this.renderDirection(-1, -1, Math.random() * range + bias, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#00daf1', this.state.axialMap);
+            this.renderDirection(1, -2, unitedStatesDollar.value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#ea0000', this.state.axialMap);
 
-        this.renderDirection(1, 1, Math.random() * range + bias, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
-            '#ffffff', '#e2e2e2', '#00ffa6', this.state.axialMap);
+            this.renderDirection(2, -1, euro.value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#9400ff', this.state.axialMap);
+
+            this.renderDirection(1, 1, poundSterling.value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#00ffa6', this.state.axialMap);
+
+            this.renderDirection(-1, 2, canadianDollar.value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#2549fd', this.state.axialMap);
+
+            this.renderDirection(-2, 1, swissFranc.value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#5dff00', this.state.axialMap);
+
+            this.renderDirection(-1, -1, newZealandDollar.value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', '#e2e2e2', '#00daf1', this.state.axialMap);
+
+
+
+        });
+
 
     }
 
