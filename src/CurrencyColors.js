@@ -157,4 +157,6 @@ export const currencyColors = {
     "CAD" : {"color" : "#3BF04D", "explanation" : "Canadian Dollar"},
     "CHF" : {"color" : "#F02466", "explanation" : "Swiss Franc"},
     "NZD" : {"color" : "#547CF0", "explanation" : "New Zealand Dollar"},
+
+    "BTC" : {"color" : "#e2a900", "explanation" : "Bitcoin"},
 }

@@ -161,7 +161,7 @@ class RegularConvexPolygon extends React.Component {
                     verticalAlign: 'top'
                 }}/>
                 <text x="50%" y="57%" style={{whiteSpace: "pre-line"}} textAnchor="middle" fontFamily="Arial"
-                      fill="black" fontWeight="bold" fontSize={this.state.textFontSize} fontWeight="normal">
+                      fill="black" fontSize={this.state.textFontSize} fontWeight="normal">
                     {this.state.text}
                 </text>
             </svg>
@@ -173,7 +173,7 @@ function LightenDarkenColor(col, amt) {
 
     let usePound = false;
 
-    if (col[0] == "#") {
+    if (col[0] === "#") {
         col = col.slice(1);
         usePound = true;
     }
@@ -322,6 +322,19 @@ class PolygonSample extends React.Component {
         return sequence;
     }
 
+    largeNumberFormatter(value) {
+
+        var expression = ["", "k", "M", "G", "T", "P", "E"];
+
+        let practicalLimit = 6;
+        let valueScale = 0;
+
+        while (value > 1000 && valueScale < practicalLimit) {
+            value = value / 1000;
+            valueScale++;
+        }
+        return value.toFixed(2) + expression[valueScale];
+    }
 
     renderDirection(currencyText, startX, startY, displayValue, direction, maxPolygonGroupMemberCount, fillColor, strokeColor, innerFillColor, axialMap) {
         let sequence = this.getSequence(startX, startY, maxPolygonGroupMemberCount, direction);
@@ -344,12 +357,13 @@ class PolygonSample extends React.Component {
 
         for (let i = 1; i < (segmentCount + 1); i++) {
             if (displayValue < stepValue) {
-                axialMap[sequence[i]].current.setText((sum + displayValue).toFixed(2));
+                //axialMap[sequence[i]].current.setText((sum + displayValue).toFixed(2));
+                axialMap[sequence[i]].current.setText(this.largeNumberFormatter(sum + displayValue));
                 axialMap[sequence[i]].current.setColor(fillColor, strokeColor, innerFillColor);
                 axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue / stepValue);
             } else {
                 sum += stepValue;
-                axialMap[sequence[i]].current.setText(sum.toFixed(1));
+                axialMap[sequence[i]].current.setText(this.largeNumberFormatter(sum));
                 axialMap[sequence[i]].current.setColor(innerFillColor, strokeColor, innerFillColor);
                 displayValue -= stepValue;
             }
@@ -375,14 +389,12 @@ class PolygonSample extends React.Component {
                 rateMap[rate.entity] = rate
             });
 
-            let poundSterling = rateMap["GBP"];
-            let canadianDollar = rateMap["CAD"];
-            let swissFranc = rateMap["CHF"];
-            let newZealandDollar = rateMap["NZD"];
-
-
             let northCurrency = "USD";
             let northEastCurrency = "EUR";
+            let southEastCurrency = "GBP";
+            let southCurrency = "CAD";
+            let southWestCurrency = "CHF";
+            let northWestCurrency = "BTC";
 
             this.renderDirection(rateMap[northCurrency].entity, 1, -2, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northCurrency].color, currencyColors[northCurrency].color, this.state.axialMap);
@@ -390,19 +402,17 @@ class PolygonSample extends React.Component {
             this.renderDirection(rateMap[northEastCurrency].entity, 2, -1, rateMap[northEastCurrency].value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northEastCurrency].color, currencyColors[northEastCurrency].color, this.state.axialMap);
 
-            let gbp = "GBP";
+            this.renderDirection(rateMap[southEastCurrency].entity, 1, 1, rateMap[southEastCurrency].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[southEastCurrency].color, currencyColors[southEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[gbp].entity, 1, 1, rateMap[gbp].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[gbp].color, currencyColors[gbp].color, this.state.axialMap);
+            this.renderDirection(rateMap[southCurrency].entity, -1, 2, rateMap[southCurrency].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[southCurrency].color, currencyColors[southCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap["CAD"].entity, -1, 2, rateMap["CAD"].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors["CAD"].color, currencyColors["CAD"].color, this.state.axialMap);
+            this.renderDirection(rateMap[southWestCurrency].entity, -2, 1, rateMap[southWestCurrency].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[southWestCurrency].color, currencyColors[southWestCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap["CHF"].entity, -2, 1, rateMap["CHF"].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors["CHF"].color, currencyColors["CHF"].color, this.state.axialMap);
-
-            this.renderDirection(rateMap["NZD"].entity, -1, -1, rateMap["NZD"].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors["NZD"].color, currencyColors["NZD"].color, this.state.axialMap);
+            this.renderDirection(rateMap[northWestCurrency].entity, -1, -1, rateMap[northWestCurrency].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[northWestCurrency].color, currencyColors[northWestCurrency].color, this.state.axialMap);
         });
 
 
