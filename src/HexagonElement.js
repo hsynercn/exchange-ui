@@ -357,7 +357,6 @@ class PolygonSample extends React.Component {
 
         for (let i = 1; i < (segmentCount + 1); i++) {
             if (displayValue < stepValue) {
-                //axialMap[sequence[i]].current.setText((sum + displayValue).toFixed(2));
                 axialMap[sequence[i]].current.setText(this.largeNumberFormatter(sum + displayValue));
                 axialMap[sequence[i]].current.setColor(fillColor, strokeColor, innerFillColor);
                 axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue / stepValue);
@@ -393,7 +392,7 @@ class PolygonSample extends React.Component {
             let northEastCurrency = "EUR";
             let southEastCurrency = "GBP";
             let southCurrency = "CAD";
-            let southWestCurrency = "CHF";
+            let southWestCurrency = "ETH";
             let northWestCurrency = "BTC";
 
             this.renderDirection(rateMap[northCurrency].entity, 1, -2, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,

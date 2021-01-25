@@ -159,4 +159,5 @@ export const currencyColors = {
     "NZD" : {"color" : "#547CF0", "explanation" : "New Zealand Dollar"},
 
     "BTC" : {"color" : "#e2a900", "explanation" : "Bitcoin"},
+    "ETH" : {"color" : "#4967fa", "explanation" : "Bitcoin"},
 }
