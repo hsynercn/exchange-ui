@@ -207,7 +207,6 @@ const directions = {
     SOUTHEAST: "SOUTHEAST",
 }
 
-
 class PolygonSample extends React.Component {
 
     constructor(props) {
@@ -327,8 +326,14 @@ class PolygonSample extends React.Component {
     renderDirection(currencyText, startX, startY, displayValue, direction, maxPolygonGroupMemberCount, fillColor, strokeColor, innerFillColor, axialMap) {
         let sequence = this.getSequence(startX, startY, maxPolygonGroupMemberCount, direction);
 
+        let digitCount = Math.max(Math.floor(Math.log10(Math.abs(displayValue))), 0) + 1;
+
+        let largestDivider = Math.pow(10, digitCount - 1);
+
         displayValue = displayValue.toFixed(2);
-        let stepValue = 1.0;
+
+        let stepValue = largestDivider;
+
         let segmentCount = Math.ceil(displayValue / stepValue);
         let sum = 0;
         segmentCount = segmentCount > maxPolygonGroupMemberCount ? maxPolygonGroupMemberCount : segmentCount;
@@ -338,15 +343,15 @@ class PolygonSample extends React.Component {
         axialMap[sequence[0]].current.setColor(textBlockColor, textBlockColor, textBlockColor);
 
         for (let i = 1; i < (segmentCount + 1); i++) {
-            if (displayValue < 1.0) {
+            if (displayValue < stepValue) {
                 axialMap[sequence[i]].current.setText((sum + displayValue).toFixed(2));
                 axialMap[sequence[i]].current.setColor(fillColor, strokeColor, innerFillColor);
-                axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue);
+                axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue / stepValue);
             } else {
                 sum += stepValue;
                 axialMap[sequence[i]].current.setText(sum.toFixed(1));
                 axialMap[sequence[i]].current.setColor(innerFillColor, strokeColor, innerFillColor);
-                displayValue--;
+                displayValue -= stepValue;
             }
         }
     }
@@ -359,6 +364,9 @@ class PolygonSample extends React.Component {
             this.state.axialMap["0,0"].current.setTextWithFontSize(currencyMap.base, 20);
             let centralTextBlockColor = currencyColors[currencyMap.base].color;
             centralTextBlockColor = LightenDarkenColor(centralTextBlockColor, 0);
+
+            //centralTextBlockColor = updateColorSaturation(centralTextBlockColor, 600);
+
             this.state.axialMap["0,0"].current.setColor(centralTextBlockColor, centralTextBlockColor, centralTextBlockColor);
 
             let rateMap = {};
@@ -367,33 +375,34 @@ class PolygonSample extends React.Component {
                 rateMap[rate.entity] = rate
             });
 
-            let unitedStatesDollar = rateMap["USD"];
-            let euro = rateMap["EUR"];
             let poundSterling = rateMap["GBP"];
             let canadianDollar = rateMap["CAD"];
             let swissFranc = rateMap["CHF"];
             let newZealandDollar = rateMap["NZD"];
 
-            let strokeColorNegativity = -90;
-            let innerFillColorNegativity = 0;
 
-            this.renderDirection(unitedStatesDollar.entity, 1, -2, unitedStatesDollar.value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["USD"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["USD"].color, innerFillColorNegativity), this.state.axialMap);
+            let northCurrency = "USD";
+            let northEastCurrency = "EUR";
 
-            this.renderDirection(euro.entity, 2, -1, euro.value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["EUR"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["EUR"].color, innerFillColorNegativity), this.state.axialMap);
+            this.renderDirection(rateMap[northCurrency].entity, 1, -2, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[northCurrency].color, currencyColors[northCurrency].color, this.state.axialMap);
 
-            this.renderDirection(poundSterling.entity, 1, 1, poundSterling.value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["GBP"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["GBP"].color, innerFillColorNegativity), this.state.axialMap);
+            this.renderDirection(rateMap[northEastCurrency].entity, 2, -1, rateMap[northEastCurrency].value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[northEastCurrency].color, currencyColors[northEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(canadianDollar.entity, -1, 2, canadianDollar.value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["CAD"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["CAD"].color, innerFillColorNegativity), this.state.axialMap);
+            let gbp = "GBP";
 
-            this.renderDirection(swissFranc.entity, -2, 1, swissFranc.value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["CHF"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["CHF"].color, innerFillColorNegativity), this.state.axialMap);
+            this.renderDirection(rateMap[gbp].entity, 1, 1, rateMap[gbp].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors[gbp].color, currencyColors[gbp].color, this.state.axialMap);
 
-            this.renderDirection(newZealandDollar.entity, -1, -1, newZealandDollar.value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', LightenDarkenColor(currencyColors["NZD"].color, strokeColorNegativity), LightenDarkenColor(currencyColors["NZD"].color, innerFillColorNegativity), this.state.axialMap);
+            this.renderDirection(rateMap["CAD"].entity, -1, 2, rateMap["CAD"].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors["CAD"].color, currencyColors["CAD"].color, this.state.axialMap);
+
+            this.renderDirection(rateMap["CHF"].entity, -2, 1, rateMap["CHF"].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors["CHF"].color, currencyColors["CHF"].color, this.state.axialMap);
+
+            this.renderDirection(rateMap["NZD"].entity, -1, -1, rateMap["NZD"].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+                '#ffffff', currencyColors["NZD"].color, currencyColors["NZD"].color, this.state.axialMap);
         });
 
 
