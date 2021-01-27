@@ -447,7 +447,7 @@ class PolygonSample extends React.Component {
         return (
             <div style={{
                 width: ( this.state.leftMargin + this.state.unitPolygonXDim * this.state.polygonCountLength)+"px",
-                height: "1200px",
+                height: (this.state.topMargin + ((this.state.polygonCountHeight+1)/2 + (this.state.polygonCountHeight-1)/4)*this.state.unitPolygonYDim) + "px",
                 //overflowX: "auto",
                 overflowY: "hidden",
                 margin:"0 auto"
