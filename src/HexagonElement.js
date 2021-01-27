@@ -146,10 +146,13 @@ class RegularConvexPolygon extends React.Component {
     }
 
     render() {
+
         return (
-            <svg height={this.state.yDim} width={this.state.xDim} style={{
-                verticalAlign: 'top'
-            }}>
+            <svg
+                height={this.state.yDim}
+                width={this.state.xDim}
+                style={{verticalAlign: 'top'}}
+            >
                 <polygon points={this.state.polygonCoordinates} style={{
                     fill: this.state.fillColor,
                     stroke: this.state.strokeColor,
@@ -212,7 +215,7 @@ class PolygonSample extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            polygonCountLength: 17,
+            polygonCountLength: 15,
             polygonCountHeight: 15,
             leftMargin: 0,
             topMargin: 0,
@@ -224,7 +227,7 @@ class PolygonSample extends React.Component {
                 startAngle: 90,
                 numSides: 6,
                 fillColor: '#ffffff',
-                strokeColor: '#e2e2e2',
+                strokeColor: '#aeaeae',
                 text: "",
                 textFontSize: 14,
                 innerPolygonRatio: 0.0,
@@ -232,6 +235,8 @@ class PolygonSample extends React.Component {
             },
             axialPolygonMap: {},
             maxPolygonGroupMemberCount: 15,
+            unitPolygonXDim: 0,
+            unitPolygonYDim: 0,
         };
 
 
@@ -324,16 +329,17 @@ class PolygonSample extends React.Component {
 
     largeNumberFormatter(value) {
 
-        var expression = ["", "k", "M", "G", "T", "P", "E"];
+        var expression = ["", "K", "M", "G", "T", "P", "E"];
 
         let practicalLimit = 6;
         let valueScale = 0;
 
-        while (value > 1000 && valueScale < practicalLimit) {
+        while (value >= 1000 && valueScale < practicalLimit) {
             value = value / 1000;
             valueScale++;
         }
-        return value.toFixed(2) + expression[valueScale];
+        let decimalDigit = value % 1 === 0 ? 1 : 2;
+        return value.toFixed(decimalDigit) + expression[valueScale];
     }
 
     renderDirection(currencyText, startX, startY, displayValue, direction, maxPolygonGroupMemberCount, fillColor, strokeColor, innerFillColor, axialMap) {
@@ -430,58 +436,57 @@ class PolygonSample extends React.Component {
                 leftMargin: tempLeft,
                 topMargin: tempTop,
                 axialArray: this.state.axialArray,
-                axialMap: this.state.axialMap
+                axialMap: this.state.axialMap,
+                unitPolygonXDim: childData.xDim,
+                unitPolygonYDim: childData.yDim,
             });
         }
     }
 
     render() {
         return (
-            <section>
+            <div style={{
+                width: ( this.state.leftMargin + this.state.unitPolygonXDim * this.state.polygonCountLength)+"px",
+                height: "1200px",
+                //overflowX: "auto",
+                overflowY: "hidden",
+                margin:"0 auto"
+            }}>
                 {
                     this.state.axialArray.map((row, index) => {
-                            if (index % 2 === 0)
+
+                            let dynamicStyle = {};
+                            if (index % 2 === 0) {
                                 if (index === 0) {
-                                    return <div
-                                        style={{
-                                            marginBottom: -this.state.topMargin
-                                        }}>{
-                                        row.map((element) => <RegularConvexPolygon
-                                            parentCallback={this.callbackFunction}
-                                            ref={this.state.axialMap[element]}
-                                            polygon={this.state.defaultUnitPolygon}
-                                        />)
-                                    }</div>
+                                    dynamicStyle = {
+                                        marginBottom: -this.state.topMargin
+                                    };
                                 } else {
-                                    return <div style={{
+                                    dynamicStyle = {
                                         marginTop: -this.state.topMargin,
                                         marginBottom: -this.state.topMargin
-                                    }}>{
-
-                                        row.map((element) => <RegularConvexPolygon
-                                            parentCallback={this.callbackFunction}
-                                            ref={this.state.axialMap[element]}
-                                            polygon={this.state.defaultUnitPolygon}
-                                        />)
-                                    }</div>
+                                    };
                                 }
-                            else {
-                                return <div
-                                    style={{
-                                        marginLeft: this.state.leftMargin, marginTop: -this.state.topMargin,
-                                        marginBottom: -this.state.topMargin
-                                    }}>{
-                                    row.map((element) => <RegularConvexPolygon
-                                        parentCallback={this.callbackFunction}
-                                        ref={this.state.axialMap[element]}
-                                        polygon={this.state.defaultUnitPolygon}
-                                    />)
-                                }</div>
+                            } else {
+                                dynamicStyle = {
+                                    marginLeft: this.state.leftMargin,
+                                    marginTop: -this.state.topMargin,
+                                    marginBottom: -this.state.topMargin
+                                };
                             }
+
+                            return <div
+                                style={dynamicStyle}>{
+                                row.map((element) => <RegularConvexPolygon
+                                    parentCallback={this.callbackFunction}
+                                    ref={this.state.axialMap[element]}
+                                    polygon={this.state.defaultUnitPolygon}
+                                />)
+                            }</div>
                         }
                     )
                 }
-            </section>
+            </div>
         );
     }
 }
