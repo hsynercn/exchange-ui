@@ -208,6 +208,7 @@ const directions = {
     SOUTHWEST: "SOUTHWEST",
     NORTHWEST: "NORTHWEST",
     SOUTHEAST: "SOUTHEAST",
+    CENTER:"CENTER",
 }
 
 class PolygonSample extends React.Component {
@@ -375,18 +376,34 @@ class PolygonSample extends React.Component {
         }
     }
 
+    getOrientations(offsetX, offsetY) {
+        let orientationOffset = {
+        }
+        orientationOffset[directions.NORTH] = {x:offsetX+1, y:offsetY-2};
+        orientationOffset[directions.NORTHEAST] = {x:offsetX+2, y:offsetY-1};
+        orientationOffset[directions.SOUTHEAST] = {x:offsetX+1, y:offsetY+1};
+        orientationOffset[directions.SOUTH] = {x:offsetX-1, y:offsetY+2};
+        orientationOffset[directions.SOUTHWEST] = {x:offsetX-2, y:offsetY+1};
+        orientationOffset[directions.NORTHWEST] = {x:offsetX-1, y:offsetY-1};
+        orientationOffset[directions.CENTER] = {x:offsetX, y:offsetY};
+        return orientationOffset;
+    }
+
     componentDidMount() {
 
         axios.get(`http://localhost:8080/currency`).then(response => {
 
+            let startPoints = this.getOrientations(-1,0);
+
             let currencyMap = response.data;
-            this.state.axialMap["0,0"].current.setTextWithFontSize(currencyMap.base, 20);
+
+            let centerPolygon = this.state.axialMap[startPoints[directions.CENTER].x +"," + startPoints[directions.CENTER].y];
+
+            centerPolygon.current.setTextWithFontSize(currencyMap.base, 20);
             let centralTextBlockColor = currencyColors[currencyMap.base].color;
             centralTextBlockColor = LightenDarkenColor(centralTextBlockColor, 0);
 
-            //centralTextBlockColor = updateColorSaturation(centralTextBlockColor, 600);
-
-            this.state.axialMap["0,0"].current.setColor(centralTextBlockColor, centralTextBlockColor, centralTextBlockColor);
+            centerPolygon.current.setColor(centralTextBlockColor, centralTextBlockColor, centralTextBlockColor);
 
             let rateMap = {};
 
@@ -401,22 +418,23 @@ class PolygonSample extends React.Component {
             let southWestCurrency = "ETH";
             let northWestCurrency = "BTC";
 
-            this.renderDirection(rateMap[northCurrency].entity, 1, -2, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
+
+            this.renderDirection(rateMap[northCurrency].entity, startPoints[directions.NORTH].x, startPoints[directions.NORTH].y, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northCurrency].color, currencyColors[northCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[northEastCurrency].entity, 2, -1, rateMap[northEastCurrency].value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[northEastCurrency].entity, startPoints[directions.NORTHEAST].x, startPoints[directions.NORTHEAST].y, rateMap[northEastCurrency].value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northEastCurrency].color, currencyColors[northEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southEastCurrency].entity, 1, 1, rateMap[southEastCurrency].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southEastCurrency].entity, startPoints[directions.SOUTHEAST].x, startPoints[directions.SOUTHEAST].y, rateMap[southEastCurrency].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southEastCurrency].color, currencyColors[southEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southCurrency].entity, -1, 2, rateMap[southCurrency].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southCurrency].entity, startPoints[directions.SOUTH].x, startPoints[directions.SOUTH].y, rateMap[southCurrency].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southCurrency].color, currencyColors[southCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southWestCurrency].entity, -2, 1, rateMap[southWestCurrency].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southWestCurrency].entity, startPoints[directions.SOUTHWEST].x, startPoints[directions.SOUTHWEST].y, rateMap[southWestCurrency].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southWestCurrency].color, currencyColors[southWestCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[northWestCurrency].entity, -1, -1, rateMap[northWestCurrency].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[northWestCurrency].entity, startPoints[directions.NORTHWEST].x, startPoints[directions.NORTHWEST].y, rateMap[northWestCurrency].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northWestCurrency].color, currencyColors[northWestCurrency].color, this.state.axialMap);
         });
 
