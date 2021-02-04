@@ -1,55 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import {currencyColors} from './CurrencyColors'
-
-function angleToRadians(degree) {
-    return degree * (Math.PI / 180);
-}
-
-function generatePoints(numSides, radius, centerAng, startAngle) {
-    const startAng = angleToRadians(startAngle);
-    const vertex = [];
-    for (let i = 0; i < numSides; i++) {
-        const ang = startAng + (i * centerAng);
-        let x = (radius * Math.cos(ang));
-        let y = (radius * Math.sin(ang));
-        vertex.push([x, y]);
-    }
-    return vertex;
-}
-
-function getEdgePoints(vertex) {
-    const arrayColumn = (arr, n) => arr.map(x => x[n]);
-    let xValues = arrayColumn(vertex, 0);
-    let yValues = arrayColumn(vertex, 1);
-    let maxX = Math.max(...xValues);
-    let maxY = Math.max(...yValues);
-    let minX = Math.min(...xValues);
-    let minY = Math.min(...yValues);
-    return {
-        minX: Math.floor(minX),
-        minY: Math.floor(minY),
-        maxX: Math.ceil(maxX),
-        maxY: Math.ceil(maxY)
-    };
-}
-
-function getDimensions(edges) {
-    return {
-        xDim: Math.ceil(edges.maxX - edges.minX),
-        yDim: Math.ceil(edges.maxY - edges.minY)
-    };
-}
-
-function getShiftedPositiveQuadrant(points, edges) {
-    let shiftedPoints = JSON.parse(JSON.stringify(points));
-    shiftedPoints.map(pair => {
-        pair[0] += -1 * edges.minX;
-        pair[1] += -1 * edges.minY;
-        return true;
-    });
-    return shiftedPoints;
-}
+import PolygonUtils, {Directions} from "./second_iteration/PolygonUtil";
 
 class RegularConvexPolygon extends React.Component {
     constructor(props) {
@@ -78,30 +30,30 @@ class RegularConvexPolygon extends React.Component {
         this.state.centerAng = 2 * Math.PI / this.state.numSides;
         this.state.edgeOffsetLen = this.state.radius * this.state.edgeOffsetRatio / 2;
 
-        let generatedPoints = generatePoints(
+        let generatedPoints = PolygonUtils.generatePoints(
             this.state.numSides,
             this.state.radius,
             this.state.centerAng,
             this.state.startAngle);
 
-        let generatedPointsOuter = generatePoints(
+        let generatedPointsOuter = PolygonUtils.generatePoints(
             this.state.numSides,
             this.state.radius + this.state.edgeOffsetLen,
             this.state.centerAng,
             this.state.startAngle);
 
-        let generatedPointsInner = generatePoints(
+        let generatedPointsInner = PolygonUtils.generatePoints(
             this.state.numSides,
             (this.state.radius + this.state.edgeOffsetLen) * this.state.innerPolygonRatio,
             this.state.centerAng,
             this.state.startAngle);
 
-        this.state.edges = getEdgePoints(generatedPointsOuter);
+        this.state.edges = PolygonUtils.getEdgePoints(generatedPointsOuter);
 
-        generatedPoints = getShiftedPositiveQuadrant(generatedPoints, this.state.edges);
-        let dimensions = getDimensions(this.state.edges);
+        generatedPoints = PolygonUtils.getShiftedPositiveQuadrant(generatedPoints, this.state.edges);
+        let dimensions = PolygonUtils.getDimensions(this.state.edges);
 
-        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
+        generatedPointsInner = PolygonUtils.getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
 
         let polygonCoordinates = generatedPoints.map(pair => pair.join(',')).join(' ');
         let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
@@ -135,12 +87,12 @@ class RegularConvexPolygon extends React.Component {
 
     setInnerPolygonRatio = (ratio) => {
 
-        let generatedPointsInner = generatePoints(
+        let generatedPointsInner = PolygonUtils.generatePoints(
             this.state.numSides,
             (this.state.radius + this.state.edgeOffsetLen) * ratio,
             this.state.centerAng,
             this.state.startAngle);
-        generatedPointsInner = getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
+        generatedPointsInner = PolygonUtils.getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
         let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
         this.setState({innerPolygonRatio: ratio, polygonCoordinatesInner: polygonCoordinatesInner});
     }
@@ -199,16 +151,6 @@ function LightenDarkenColor(col, amt) {
     else if (g < 0) g = 0;
 
     return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
-}
-
-const directions = {
-    NORTH: "NORTH",
-    SOUTH: "SOUTH",
-    NORTHEAST: "NORTHEAST",
-    SOUTHWEST: "SOUTHWEST",
-    NORTHWEST: "NORTHWEST",
-    SOUTHEAST: "SOUTHEAST",
-    CENTER:"CENTER",
 }
 
 class PolygonSample extends React.Component {
@@ -280,7 +222,7 @@ class PolygonSample extends React.Component {
         let tmpCount = 0;
 
         let factor;
-        if (direction === directions.NORTH || direction === directions.NORTHEAST || direction === directions.NORTHWEST) {
+        if (direction === Directions.NORTH || direction === Directions.NORTHEAST || direction === Directions.NORTHWEST) {
             factor = 1;
         } else {
             factor = -1;
@@ -291,7 +233,7 @@ class PolygonSample extends React.Component {
         let x = refX;
         let y = refY;
 
-        if (direction === directions.NORTH || direction === directions.SOUTH) {
+        if (direction === Directions.NORTH || direction === Directions.SOUTH) {
             for (let i = 1; tmpCount < polygonCount; i++) {
                 x = refX;
                 for (let j = 1; j <= i && tmpCount < polygonCount; j++) {
@@ -301,7 +243,7 @@ class PolygonSample extends React.Component {
                 }
                 y--;
             }
-        } else if (direction === directions.NORTHEAST || direction === directions.SOUTHWEST) {
+        } else if (direction === Directions.NORTHEAST || direction === Directions.SOUTHWEST) {
             for (let i = 1; tmpCount < polygonCount; i++) {
                 y = refY;
                 for (let j = 1; j <= i && tmpCount < polygonCount; j++) {
@@ -312,7 +254,7 @@ class PolygonSample extends React.Component {
                 x++;
                 refY--;
             }
-        } else if (direction === directions.NORTHWEST || direction === directions.SOUTHEAST) {
+        } else if (direction === Directions.NORTHWEST || direction === Directions.SOUTHEAST) {
             for (let i = 1; tmpCount < polygonCount; i++) {
                 x = refX;
                 y = refY;
@@ -379,13 +321,13 @@ class PolygonSample extends React.Component {
     getOrientations(offsetX, offsetY) {
         let orientationOffset = {
         }
-        orientationOffset[directions.NORTH] = {x:offsetX+1, y:offsetY-2};
-        orientationOffset[directions.NORTHEAST] = {x:offsetX+2, y:offsetY-1};
-        orientationOffset[directions.SOUTHEAST] = {x:offsetX+1, y:offsetY+1};
-        orientationOffset[directions.SOUTH] = {x:offsetX-1, y:offsetY+2};
-        orientationOffset[directions.SOUTHWEST] = {x:offsetX-2, y:offsetY+1};
-        orientationOffset[directions.NORTHWEST] = {x:offsetX-1, y:offsetY-1};
-        orientationOffset[directions.CENTER] = {x:offsetX, y:offsetY};
+        orientationOffset[Directions.NORTH] = {x:offsetX+1, y:offsetY-2};
+        orientationOffset[Directions.NORTHEAST] = {x:offsetX+2, y:offsetY-1};
+        orientationOffset[Directions.SOUTHEAST] = {x:offsetX+1, y:offsetY+1};
+        orientationOffset[Directions.SOUTH] = {x:offsetX-1, y:offsetY+2};
+        orientationOffset[Directions.SOUTHWEST] = {x:offsetX-2, y:offsetY+1};
+        orientationOffset[Directions.NORTHWEST] = {x:offsetX-1, y:offsetY-1};
+        orientationOffset[Directions.CENTER] = {x:offsetX, y:offsetY};
         return orientationOffset;
     }
 
@@ -397,7 +339,7 @@ class PolygonSample extends React.Component {
 
             let currencyMap = response.data;
 
-            let centerPolygon = this.state.axialMap[startPoints[directions.CENTER].x +"," + startPoints[directions.CENTER].y];
+            let centerPolygon = this.state.axialMap[startPoints[Directions.CENTER].x +"," + startPoints[Directions.CENTER].y];
 
             centerPolygon.current.setTextWithFontSize(currencyMap.base, 20);
             let centralTextBlockColor = currencyColors[currencyMap.base].color;
@@ -419,22 +361,22 @@ class PolygonSample extends React.Component {
             let northWestCurrency = "BTC";
 
 
-            this.renderDirection(rateMap[northCurrency].entity, startPoints[directions.NORTH].x, startPoints[directions.NORTH].y, rateMap[northCurrency].value, directions.NORTH, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[northCurrency].entity, startPoints[Directions.NORTH].x, startPoints[Directions.NORTH].y, rateMap[northCurrency].value, Directions.NORTH, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northCurrency].color, currencyColors[northCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[northEastCurrency].entity, startPoints[directions.NORTHEAST].x, startPoints[directions.NORTHEAST].y, rateMap[northEastCurrency].value, directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[northEastCurrency].entity, startPoints[Directions.NORTHEAST].x, startPoints[Directions.NORTHEAST].y, rateMap[northEastCurrency].value, Directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northEastCurrency].color, currencyColors[northEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southEastCurrency].entity, startPoints[directions.SOUTHEAST].x, startPoints[directions.SOUTHEAST].y, rateMap[southEastCurrency].value, directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southEastCurrency].entity, startPoints[Directions.SOUTHEAST].x, startPoints[Directions.SOUTHEAST].y, rateMap[southEastCurrency].value, Directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southEastCurrency].color, currencyColors[southEastCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southCurrency].entity, startPoints[directions.SOUTH].x, startPoints[directions.SOUTH].y, rateMap[southCurrency].value, directions.SOUTH, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southCurrency].entity, startPoints[Directions.SOUTH].x, startPoints[Directions.SOUTH].y, rateMap[southCurrency].value, Directions.SOUTH, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southCurrency].color, currencyColors[southCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[southWestCurrency].entity, startPoints[directions.SOUTHWEST].x, startPoints[directions.SOUTHWEST].y, rateMap[southWestCurrency].value, directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[southWestCurrency].entity, startPoints[Directions.SOUTHWEST].x, startPoints[Directions.SOUTHWEST].y, rateMap[southWestCurrency].value, Directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[southWestCurrency].color, currencyColors[southWestCurrency].color, this.state.axialMap);
 
-            this.renderDirection(rateMap[northWestCurrency].entity, startPoints[directions.NORTHWEST].x, startPoints[directions.NORTHWEST].y, rateMap[northWestCurrency].value, directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
+            this.renderDirection(rateMap[northWestCurrency].entity, startPoints[Directions.NORTHWEST].x, startPoints[Directions.NORTHWEST].y, rateMap[northWestCurrency].value, Directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
                 '#ffffff', currencyColors[northWestCurrency].color, currencyColors[northWestCurrency].color, this.state.axialMap);
         });
 
