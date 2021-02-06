@@ -8,10 +8,11 @@ import Unified from "./MyFirstElement";
 import Container from "./GitHubCards";
 import CurrencyElement from "./CurrencyElement";
 import PolygonSample from "./HexagonElement";
+import TestComptForRegularConvexPolygon from "./second_iteration/TestComptForRegularConvexPolygon";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div id="demo" style={{backgroundColor: 'white'}}><PolygonSample/></div>
+    <TestComptForRegularConvexPolygon/>
   </React.StrictMode>,
   document.getElementById('root')
 );

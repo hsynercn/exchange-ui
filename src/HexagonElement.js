@@ -3,6 +3,8 @@ import axios from 'axios';
 import {currencyColors} from './CurrencyColors'
 import PolygonUtils, {Directions} from "./second_iteration/PolygonUtil";
 import {LightenDarkenColor} from "./second_iteration/ColorUtil";
+import {getRadialExpansionSequence} from "./second_iteration/HexagonGridUtils";
+import {largeNumberFormatter} from "./second_iteration/NumberTextUtil";
 
 class RegularConvexPolygon extends React.Component {
     constructor(props) {
@@ -153,7 +155,6 @@ class PolygonSample extends React.Component {
             unitPolygonYDim: 0,
         };
 
-
         let length = this.state.polygonCountLength;
         let height = this.state.polygonCountHeight;
         length = length % 2 === 1 ? length : length + 1;
@@ -183,81 +184,8 @@ class PolygonSample extends React.Component {
 
     }
 
-
-    getSequence(startX, startY, value, direction) {
-        let sequence = [];
-        let refX = startX;
-        let refY = startY;
-
-        let polygonCount = Math.ceil(value);
-        let tmpCount = 0;
-
-        let factor;
-        if (direction === Directions.NORTH || direction === Directions.NORTHEAST || direction === Directions.NORTHWEST) {
-            factor = 1;
-        } else {
-            factor = -1;
-            refX = -refX;
-            refY = -refY;
-        }
-
-        let x = refX;
-        let y = refY;
-
-        if (direction === Directions.NORTH || direction === Directions.SOUTH) {
-            for (let i = 1; tmpCount < polygonCount; i++) {
-                x = refX;
-                for (let j = 1; j <= i && tmpCount < polygonCount; j++) {
-                    sequence.push(factor * x + "," + factor * y);
-                    x++;
-                    tmpCount++;
-                }
-                y--;
-            }
-        } else if (direction === Directions.NORTHEAST || direction === Directions.SOUTHWEST) {
-            for (let i = 1; tmpCount < polygonCount; i++) {
-                y = refY;
-                for (let j = 1; j <= i && tmpCount < polygonCount; j++) {
-                    sequence.push(factor * x + "," + factor * y);
-                    y++;
-                    tmpCount++;
-                }
-                x++;
-                refY--;
-            }
-        } else if (direction === Directions.NORTHWEST || direction === Directions.SOUTHEAST) {
-            for (let i = 1; tmpCount < polygonCount; i++) {
-                x = refX;
-                y = refY;
-                for (let j = 1; j <= i && tmpCount < polygonCount; j++) {
-                    sequence.push(factor * x + "," + factor * y);
-                    x++;
-                    y--;
-                    tmpCount++;
-                }
-                refX--;
-            }
-        }
-        return sequence;
-    }
-
-    largeNumberFormatter(value) {
-
-        var expression = ["", "K", "M", "G", "T", "P", "E"];
-
-        let practicalLimit = 6;
-        let valueScale = 0;
-
-        while (value >= 1000 && valueScale < practicalLimit) {
-            value = value / 1000;
-            valueScale++;
-        }
-        let decimalDigit = value % 1 === 0 ? 1 : 2;
-        return value.toFixed(decimalDigit) + expression[valueScale];
-    }
-
     renderDirection(currencyText, startX, startY, displayValue, direction, maxPolygonGroupMemberCount, fillColor, strokeColor, innerFillColor, axialMap) {
-        let sequence = this.getSequence(startX, startY, maxPolygonGroupMemberCount, direction);
+        let sequence = getRadialExpansionSequence(startX, startY, maxPolygonGroupMemberCount, direction);
 
         let digitCount = Math.max(Math.floor(Math.log10(Math.abs(displayValue))), 0) + 1;
 
@@ -277,12 +205,12 @@ class PolygonSample extends React.Component {
 
         for (let i = 1; i < (segmentCount + 1); i++) {
             if (displayValue < stepValue) {
-                axialMap[sequence[i]].current.setText(this.largeNumberFormatter(sum + displayValue));
+                axialMap[sequence[i]].current.setText(largeNumberFormatter(sum + displayValue));
                 axialMap[sequence[i]].current.setColor(fillColor, strokeColor, innerFillColor);
                 axialMap[sequence[i]].current.setInnerPolygonRatio(displayValue / stepValue);
             } else {
                 sum += stepValue;
-                axialMap[sequence[i]].current.setText(this.largeNumberFormatter(sum));
+                axialMap[sequence[i]].current.setText(largeNumberFormatter(sum));
                 axialMap[sequence[i]].current.setColor(innerFillColor, strokeColor, innerFillColor);
                 displayValue -= stepValue;
             }

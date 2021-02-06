@@ -17,11 +17,11 @@ const useRegularConvexPolygon = (props) => {
     const [centerAng, setCenterAng] = useState(2 * Math.PI / numSides);
     const [edgeOffsetLen, setEdgeOffsetLen] = useState(radius * edgeOffsetRatio / 2);
 
-    const [generatedPoints, setGeneratedPoints] = useState(PolygonUtils.generatePoints(
+    const tempGeneratedPoints = PolygonUtils.generatePoints(
         numSides,
         radius,
         centerAng,
-        startAngle));
+        startAngle);
 
     let generatedPointsOuter = PolygonUtils.generatePoints(
         numSides,
@@ -29,21 +29,19 @@ const useRegularConvexPolygon = (props) => {
         centerAng,
         startAngle);
 
-    const [generatedPointsInner, setGeneratedPointsInner] = useState(PolygonUtils.generatePoints(
+    const tempGeneratedPointsInner = PolygonUtils.generatePoints(
         numSides,
         (radius + edgeOffsetLen) * innerPolygonRatio,
         centerAng,
-        startAngle));
+        startAngle);
 
 
     const [edges, setEdges] = useState(PolygonUtils.getEdgePoints(generatedPointsOuter));
-    let dimensions = PolygonUtils.getDimensions(this.state.edges);
+    let dimensions = PolygonUtils.getDimensions(edges);
 
-    this.state.polygonCoordinates = polygonCoordinates;
-    this.state.polygonCoordinatesInner = polygonCoordinatesInner;
+    const[generatedPoints, setGeneratedPoints] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPoints, edges));
+    const[generatedPointsInner, setGeneratedPointsInner] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPointsInner, edges));
 
-    setGeneratedPoints(PolygonUtils.getShiftedPositiveQuadrant(generatedPoints, edges));
-    setGeneratedPointsInner(PolygonUtils.getShiftedPositiveQuadrant(generatedPointsInner, edges));
 
     const [polygonCoordinates, setPolygonCoordinates] = useState(generatedPoints.map(pair => pair.join(',')).join(' '));
     const [polygonCoordinatesInner, setPolygonCoordinatesInner] = useState(generatedPointsInner.map(pair => pair.join(',')).join(' '));
@@ -66,11 +64,11 @@ const useRegularConvexPolygon = (props) => {
     const setInnerPolygonFullnessRatio = (ratio) => {
 
         let generatedPointsInner = PolygonUtils.generatePoints(
-            this.state.numSides,
-            (this.state.radius + this.state.edgeOffsetLen) * ratio,
-            this.state.centerAng,
-            this.state.startAngle);
-        generatedPointsInner = PolygonUtils.getShiftedPositiveQuadrant(generatedPointsInner, this.state.edges);
+            numSides,
+            (radius + edgeOffsetLen) * ratio,
+            centerAng,
+            startAngle);
+        generatedPointsInner = PolygonUtils.getShiftedPositiveQuadrant(generatedPointsInner, edges);
         let polygonCoordinatesInner = generatedPointsInner.map(pair => pair.join(',')).join(' ');
         setGeneratedPointsInner(generatedPointsInner);
         setInnerPolygonRatio(ratio);
@@ -144,3 +142,5 @@ const RegularConvexPolygon = (props) => {
         </svg>
     );
 }
+
+export default RegularConvexPolygon;
