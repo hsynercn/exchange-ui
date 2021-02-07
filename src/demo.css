@@ -1,7 +1,15 @@
-/*#demo .row:nth-child(1n+2) {
-    margin-top: -10.3%;
-}*/
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: middle;
+    overflow: hidden;
+}
 
-#demo .row:nth-child(even) :first-child {
-    margin-left: 16.666666667%;
+.svg-content {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
 }

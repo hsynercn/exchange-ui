@@ -3,7 +3,8 @@ import PolygonUtils from "./PolygonUtil";
 
 const useRegularConvexPolygon = (props) => {
 
-    const [radius, setRadius] = useState(props.radius);
+    const [widthRatio, setWidthRatio] = useState(props.widthRatio);
+    const [radius, setRadius] = useState(40);
     const [edgeOffsetRatio, setEdgeOffsetRatio] = useState(props.edgeOffsetRatio);
     const [startAngle, setStartAngle] = useState(props.startAngle);
     const [numSides, setNumSides] = useState(props.numSides);
@@ -39,8 +40,8 @@ const useRegularConvexPolygon = (props) => {
     const [edges, setEdges] = useState(PolygonUtils.getEdgePoints(generatedPointsOuter));
     let dimensions = PolygonUtils.getDimensions(edges);
 
-    const[generatedPoints, setGeneratedPoints] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPoints, edges));
-    const[generatedPointsInner, setGeneratedPointsInner] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPointsInner, edges));
+    const [generatedPoints, setGeneratedPoints] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPoints, edges));
+    const [generatedPointsInner, setGeneratedPointsInner] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPointsInner, edges));
 
 
     const [polygonCoordinates, setPolygonCoordinates] = useState(generatedPoints.map(pair => pair.join(',')).join(' '));
@@ -76,7 +77,7 @@ const useRegularConvexPolygon = (props) => {
     }
 
     return {
-        radius,
+        widthRatio,
         edgeOffsetRatio,
         startAngle,
         numSides,
@@ -99,7 +100,7 @@ const useRegularConvexPolygon = (props) => {
 
 const RegularConvexPolygon = (props) => {
     const {
-        radius,
+        widthRatio,
         edgeOffsetRatio,
         startAngle,
         numSides,
@@ -121,14 +122,14 @@ const RegularConvexPolygon = (props) => {
 
     return (
         <svg
-            height={yDim}
-            width={xDim}
+            width={widthRatio + "%"}
+            viewBox={"0 0 " + xDim + " " + yDim}
             style={{verticalAlign: 'top'}}
         >
             <polygon points={polygonCoordinates} style={{
                 fill: fillColor,
                 stroke: strokeColor,
-                strokeWidth: radius * edgeOffsetRatio,
+                strokeWidth: (100 * edgeOffsetRatio) + "%",
                 verticalAlign: 'top'
             }}/>
             <polygon points={polygonCoordinatesInner} style={{
