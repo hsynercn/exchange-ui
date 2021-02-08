@@ -4,7 +4,7 @@ import PolygonUtils from "./PolygonUtil";
 const useRegularConvexPolygon = (props) => {
 
     const [widthRatio, setWidthRatio] = useState(props.widthRatio);
-    const [radius, setRadius] = useState(40);
+    const [radius, setRadius] = useState(30);
     const [edgeOffsetRatio, setEdgeOffsetRatio] = useState(props.edgeOffsetRatio);
     const [startAngle, setStartAngle] = useState(props.startAngle);
     const [numSides, setNumSides] = useState(props.numSides);
@@ -122,7 +122,7 @@ const RegularConvexPolygon = (props) => {
 
     return (
         <svg
-            width={widthRatio + "%"}
+            width={(widthRatio * 100) + "%"}
             viewBox={"0 0 " + xDim + " " + yDim}
             style={{verticalAlign: 'top'}}
         >

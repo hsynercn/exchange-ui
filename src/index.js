@@ -9,10 +9,11 @@ import Container from "./GitHubCards";
 import CurrencyElement from "./CurrencyElement";
 import PolygonSample from "./HexagonElement";
 import TestComptForRegularConvexPolygon from "./second_iteration/TestComptForRegularConvexPolygon";
+import TestComptForPolygonGroup from "./second_iteration/TestCompForPolygonGroup";
 
 ReactDOM.render(
   <React.StrictMode>
-    <TestComptForRegularConvexPolygon/>
+    <TestComptForPolygonGroup/>
   </React.StrictMode>,
   document.getElementById('root')
 );
