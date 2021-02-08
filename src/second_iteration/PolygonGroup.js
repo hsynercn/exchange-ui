@@ -75,25 +75,33 @@ const PolygonGroup = (props) => {
                 axialArray.map((row, index) => {
 
                         let dynamicStyle = {};
-                        if (index % 2 === 0) {
+                        if (axialArray.length === index + 1) {
+                            dynamicStyle = {
+                                marginRight: horizontalMargin + "%",
+                                //marginTop: "-5.196%",
+                                //marginBottom: "-5.196%"
+                            };
+                        } else if (index % 2 === 0) {
                             if (index === 0) {
                                 dynamicStyle = {
                                     marginRight: horizontalMargin + "%",
-                                    marginBottom: "-5.196%"
+                                    marginBottom: "-5.196%",
                                 };
                             } else {
                                 dynamicStyle = {
                                     marginRight: horizontalMargin + "%",
-                                    marginTop: "-5.196%",
-                                    marginBottom: "-5.196%"
+                                    //marginTop: "-5.196%",
+                                    marginBottom: "-5.196%",
                                 };
                             }
                         } else {
+
                             dynamicStyle = {
                                 marginLeft: horizontalMargin + "%",
-                                marginTop: "-5.196%",
-                                marginBottom: "-5.196%"
+                                //marginTop: "-5.196%",
+                                marginBottom: "-5.196%",
                             };
+
                         }
                         return <div
                             style={dynamicStyle}>{
