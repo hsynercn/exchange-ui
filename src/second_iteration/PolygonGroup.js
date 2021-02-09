@@ -63,6 +63,7 @@ const PolygonGroup = (props) => {
     } = usePolygonGroup(props);
 
     const horizontalMargin = (1 / ((polygonCountLength * 2) + 1)) * 100;
+    const verticalMargin = horizontalMargin / Math.sqrt(3)
 
     return (
         <div style={{
@@ -78,28 +79,24 @@ const PolygonGroup = (props) => {
                         if (axialArray.length === index + 1) {
                             dynamicStyle = {
                                 marginRight: horizontalMargin + "%",
-                                //marginTop: "-5.196%",
-                                //marginBottom: "-5.196%"
                             };
                         } else if (index % 2 === 0) {
                             if (index === 0) {
                                 dynamicStyle = {
                                     marginRight: horizontalMargin + "%",
-                                    marginBottom: "-5.196%",
+                                    marginBottom: "-" + verticalMargin + "%",
                                 };
                             } else {
                                 dynamicStyle = {
                                     marginRight: horizontalMargin + "%",
-                                    //marginTop: "-5.196%",
-                                    marginBottom: "-5.196%",
+                                    marginBottom: "-" + verticalMargin + "%",
                                 };
                             }
                         } else {
 
                             dynamicStyle = {
                                 marginLeft: horizontalMargin + "%",
-                                //marginTop: "-5.196%",
-                                marginBottom: "-5.196%",
+                                marginBottom: "-" + verticalMargin +"%",
                             };
 
                         }
