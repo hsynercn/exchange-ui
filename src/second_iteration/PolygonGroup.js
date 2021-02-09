@@ -33,6 +33,10 @@ const usePolygonGroup = (props) => {
         }
     }
 
+    props.customizedPolygons.map((element, index) =>{
+        tempAxialMap[element.coordinateStr] = element.polygon;
+    });
+
     const [axialArray, setAxialArray] = useState(tempAxialArray);
     const [axialMap, setAxialMap] = useState(tempAxialMap);
     const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(tempDefaultUnitPolygon);

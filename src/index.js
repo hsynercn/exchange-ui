@@ -2,18 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './demo.css'
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Unified from "./MyFirstElement";
-import Container from "./GitHubCards";
-import CurrencyElement from "./CurrencyElement";
-import PolygonSample from "./HexagonElement";
-import TestComptForRegularConvexPolygon from "./second_iteration/TestComptForRegularConvexPolygon";
-import TestComptForPolygonGroup from "./second_iteration/TestCompForPolygonGroup";
+import TestComptForRadialCurrencyDisplay from "./second_iteration/TestCompForRadialCurrencyDisplay";
 
 ReactDOM.render(
   <React.StrictMode>
-    <TestComptForPolygonGroup/>
+    <TestComptForRadialCurrencyDisplay/>
   </React.StrictMode>,
   document.getElementById('root')
 );
