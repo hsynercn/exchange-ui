@@ -22,13 +22,6 @@ const usePolygonGroup = (props) => {
 
     let tempDefaultUnitPolygon = {};
 
-    if (typeof props.defaultUnitPolygon.widthRatio === "undefined") {
-        tempDefaultUnitPolygon = JSON.parse(JSON.stringify(props.defaultUnitPolygon));
-        tempDefaultUnitPolygon.widthRatio = 1 / polygonCountLength;
-    } else {
-        tempDefaultUnitPolygon = JSON.parse(JSON.stringify(props.defaultUnitPolygon));
-    }
-
     let tempAxialArray = [];
     let tempAxialMap = {};
     for (let j = 0; j < height; j++) {
@@ -36,7 +29,7 @@ const usePolygonGroup = (props) => {
         for (let i = 0; i < length; i++) {
             let coordinateStr = (tempStartX + i - Math.floor(j / 2)) + "," + (tempStartY + j)
             tempAxialArray[j].push(coordinateStr);
-            tempAxialMap[coordinateStr] = tempDefaultUnitPolygon;
+            tempAxialMap[coordinateStr] = props.defaultUnitPolygon;
         }
     }
 
@@ -44,12 +37,15 @@ const usePolygonGroup = (props) => {
     const [axialMap, setAxialMap] = useState(tempAxialMap);
     const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(tempDefaultUnitPolygon);
 
+    const[widthRatio, setWidthRatio] = useState(1 / polygonCountLength);
+
     return {
         polygonCountLength,
         polygonCountHeight,
         axialArray,
         axialMap,
-        defaultUnitPolygon
+        defaultUnitPolygon,
+        widthRatio
     };
 }
 
@@ -59,7 +55,8 @@ const PolygonGroup = (props) => {
         polygonCountHeight,
         axialArray,
         axialMap,
-        defaultUnitPolygon
+        defaultUnitPolygon,
+        widthRatio
     } = usePolygonGroup(props);
 
     const horizontalMargin = (1 / ((polygonCountLength * 2) + 1)) * 100;
@@ -96,13 +93,13 @@ const PolygonGroup = (props) => {
 
                             dynamicStyle = {
                                 marginLeft: horizontalMargin + "%",
-                                marginBottom: "-" + verticalMargin +"%",
+                                marginBottom: "-" + verticalMargin + "%",
                             };
 
                         }
                         return <div
                             style={dynamicStyle}>{
-                            row.map((element) => <RegularConvexPolygon {...axialMap[element]}
+                            row.map((element) => <RegularConvexPolygon widthRatio={widthRatio} {...axialMap[element]}
                             />)
                         }</div>
                     }
