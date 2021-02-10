@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PolygonUtils from "./PolygonUtil";
 
 const useRegularConvexPolygon = (props) => {
@@ -50,6 +50,18 @@ const useRegularConvexPolygon = (props) => {
 
     const [xDim, setXDim] = useState(dimensions.xDim);
     const [yDim, setYDim] = useState(dimensions.yDim);
+
+    useEffect(() => {
+        setFillColor(props.fillColor);
+        setStrokeColor(props.strokeColor);
+        setInnerFillColor(props.innerFillColor);
+        /*const [fillColor, setFillColor] = useState(props.fillColor);
+        const [strokeColor, setStrokeColor] = useState(props.strokeColor);
+        const [text, setText] = useState(props.text);
+        const [textFontSize, setTextFontSize] = useState(props.textFontSize);
+        const [innerPolygonRatio, setInnerPolygonRatio] = useState(props.innerPolygonRatio);
+        const [innerFillColor, setInnerFillColor] = useState(props.innerFillColor);*/
+    }, [props]);
 
     const setTextWithFontSize = (text, textFontSize) => {
         setText(text);
