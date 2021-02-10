@@ -56,3 +56,14 @@ export const Directions = {
     SOUTHEAST: "SOUTHEAST",
     CENTER: "CENTER",
 }
+export const getOrientations = (offsetX, offsetY) => {
+    let orientationOffset = {}
+    orientationOffset[Directions.NORTH] = {x: offsetX + 1, y: offsetY - 2};
+    orientationOffset[Directions.NORTHEAST] = {x: offsetX + 2, y: offsetY - 1};
+    orientationOffset[Directions.SOUTHEAST] = {x: offsetX + 1, y: offsetY + 1};
+    orientationOffset[Directions.SOUTH] = {x: offsetX - 1, y: offsetY + 2};
+    orientationOffset[Directions.SOUTHWEST] = {x: offsetX - 2, y: offsetY + 1};
+    orientationOffset[Directions.NORTHWEST] = {x: offsetX - 1, y: offsetY - 1};
+    orientationOffset[Directions.CENTER] = {x: offsetX, y: offsetY};
+    return orientationOffset;
+}
