@@ -81,7 +81,6 @@ export function centeredHexagonPolygonGrid(length, height, defaultPolygon) {
     let tempStartX = topLeftCoordinateX;
     let tempStartY = topLeftCoordinateY;
 
-
     let {tempAxialArray, tempAxialMap} = generateHexagonPolygonGrid(height, length, tempStartX, tempStartY, defaultPolygon);
     return {tempAxialArray, tempAxialMap};
 }

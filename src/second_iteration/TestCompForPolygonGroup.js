@@ -1,6 +1,5 @@
 import PolygonGroup from "./PolygonGroup";
 import React from "react";
-import TestComptForRegularConvexPolygon from "./TestComptForRegularConvexPolygon";
 
 const TestComptForPolygonGroup = (props) => {
     return (

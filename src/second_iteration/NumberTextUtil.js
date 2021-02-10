@@ -1,6 +1,6 @@
 export const largeNumberFormatter = (value) => {
 
-    var expression = ["", "K", "M", "G", "T", "P", "E"];
+    let expression = ["", "K", "M", "G", "T", "P", "E"];
 
     let practicalLimit = 6;
     let valueScale = 0;

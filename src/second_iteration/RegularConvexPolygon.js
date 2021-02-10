@@ -43,10 +43,8 @@ const useRegularConvexPolygon = (props) => {
     const [generatedPoints, setGeneratedPoints] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPoints, edges));
     const [generatedPointsInner, setGeneratedPointsInner] = useState(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPointsInner, edges));
 
-
     const [polygonCoordinates, setPolygonCoordinates] = useState(generatedPoints.map(pair => pair.join(',')).join(' '));
     const [polygonCoordinatesInner, setPolygonCoordinatesInner] = useState(generatedPointsInner.map(pair => pair.join(',')).join(' '));
-
 
     const [xDim, setXDim] = useState(dimensions.xDim);
     const [yDim, setYDim] = useState(dimensions.yDim);

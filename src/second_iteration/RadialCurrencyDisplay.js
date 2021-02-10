@@ -15,20 +15,6 @@ const useRadialCurrencyDisplay = (props) => {
     const [axialArray, setAxialArray] = useState(tempAxialArray);
     const [axialMap, setAxialMap] = useState(tempAxialMap);
 
-    /*let testColored = [{
-        coordinateStr: "0,0", polygon: {
-            edgeOffsetRatio: 0.036,
-            startAngle: 90,
-            numSides: 6,
-            fillColor: '#ffffff',
-            strokeColor: '#000000',
-            text: "",
-            textFontSize: 14,
-            innerPolygonRatio: 0.0,
-            innerFillColor: "",
-        }
-    }];*/
-
     const [customizedPolygons, setCustomizedPolygons] = useState([]);
 
     useEffect(() => {
