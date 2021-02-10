@@ -1,6 +1,5 @@
 import RegularConvexPolygon from "./RegularConvexPolygon";
 import React, {useState} from "react";
-import {centeredHexagonPolygonGrid} from "./HexagonGridUtils";
 
 const usePolygonGroup = (props) => {
 

@@ -1,11 +1,12 @@
 import {Directions} from "./PolygonUtil";
 
-export const getRadialExpansionSequence = (startX, startY, value, direction) => {
+const MAX_RADIAL_EXPANSE_COUNT = 15;
+export const getRadialExpansionSequence = (startX, startY, direction, maxPolygonGroupMemberCount = MAX_RADIAL_EXPANSE_COUNT) => {
     let sequence = [];
     let refX = startX;
     let refY = startY;
 
-    let polygonCount = Math.ceil(value);
+    let polygonCount = Math.ceil(maxPolygonGroupMemberCount);
     let tmpCount = 0;
 
     let factor;
@@ -83,4 +84,8 @@ export function centeredHexagonPolygonGrid(length, height, defaultPolygon) {
 
     let {tempAxialArray, tempAxialMap} = generateHexagonPolygonGrid(height, length, tempStartX, tempStartY, defaultPolygon);
     return {tempAxialArray, tempAxialMap};
+}
+
+export function getRadialExpansionLimit() {
+    return MAX_RADIAL_EXPANSE_COUNT;
 }

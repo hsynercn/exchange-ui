@@ -4,7 +4,11 @@ import {currencyColors} from './CurrencyColors'
 import PolygonUtils, {Directions, getOrientations} from "./second_iteration/PolygonUtil";
 import {LightenDarkenColor} from "./second_iteration/ColorUtil";
 import {getRadialExpansionSequence} from "./second_iteration/HexagonGridUtils";
-import {largeNumberFormatter} from "./second_iteration/NumberTextUtil";
+import {
+    getDecimalDigitCount,
+    getPowerOfTen,
+    largeNumberFormatter
+} from "./second_iteration/NumberFormattingUtil";
 
 class RegularConvexPolygon extends React.Component {
     constructor(props) {
@@ -186,11 +190,11 @@ class PolygonSample extends React.Component {
     }
 
     renderDirection(currencyText, startX, startY, displayValue, direction, maxPolygonGroupMemberCount, fillColor, strokeColor, innerFillColor, axialMap) {
-        let sequence = getRadialExpansionSequence(startX, startY, maxPolygonGroupMemberCount, direction);
+        let sequence = getRadialExpansionSequence(startX, startY, direction, maxPolygonGroupMemberCount);
 
-        let digitCount = Math.max(Math.floor(Math.log10(Math.abs(displayValue))), 0) + 1;
+        let digitCount = getDecimalDigitCount(displayValue);
 
-        let largestDivider = Math.pow(10, digitCount - 1);
+        let largestDivider = getPowerOfTen(digitCount);
 
         displayValue = displayValue.toFixed(2);
 

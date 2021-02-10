@@ -55,7 +55,17 @@ export const Directions = {
     NORTHWEST: "NORTHWEST",
     SOUTHEAST: "SOUTHEAST",
     CENTER: "CENTER",
+    EAST: "EAST",
+    WEST: "WEST",
 }
+export const ClockwiseHexagonDirections = [
+    Directions.NORTH,
+    Directions.NORTHEAST,
+    Directions.SOUTHEAST,
+    Directions.SOUTH,
+    Directions.SOUTHWEST,
+    Directions.NORTHWEST
+];
 export const getOrientations = (offsetX, offsetY) => {
     let orientationOffset = {}
     orientationOffset[Directions.NORTH] = {x: offsetX + 1, y: offsetY - 2};
