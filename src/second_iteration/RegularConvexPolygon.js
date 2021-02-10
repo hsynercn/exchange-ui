@@ -53,12 +53,9 @@ const useRegularConvexPolygon = (props) => {
         setFillColor(props.fillColor);
         setStrokeColor(props.strokeColor);
         setInnerFillColor(props.innerFillColor);
-        /*const [fillColor, setFillColor] = useState(props.fillColor);
-        const [strokeColor, setStrokeColor] = useState(props.strokeColor);
-        const [text, setText] = useState(props.text);
-        const [textFontSize, setTextFontSize] = useState(props.textFontSize);
-        const [innerPolygonRatio, setInnerPolygonRatio] = useState(props.innerPolygonRatio);
-        const [innerFillColor, setInnerFillColor] = useState(props.innerFillColor);*/
+        setInnerPolygonRatio(props.innerPolygonRatio);
+        setText(props.text);
+        setTextFontSize(props.textFontSize);
     }, [props]);
 
     const setTextWithFontSize = (text, textFontSize) => {
@@ -73,7 +70,6 @@ const useRegularConvexPolygon = (props) => {
     }
 
     const setInnerPolygonFullnessRatio = (ratio) => {
-
         let generatedPointsInner = PolygonUtils.generatePoints(
             numSides,
             (radius + edgeOffsetLen) * ratio,

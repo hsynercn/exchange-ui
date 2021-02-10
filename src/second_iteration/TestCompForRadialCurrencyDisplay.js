@@ -1,11 +1,11 @@
 import React from "react";
-import RadialCurrencyDisplay from "./RadialCurrencyDisplay";
+import CurrencyDisplay from "./CurrencyDisplay";
 
 const TestComptForRadialCurrencyDisplay = (props) => {
     return (
         <>
-            <RadialCurrencyDisplay
-                polygonCountLength={13}
+            <CurrencyDisplay
+                polygonCountLength={15}
                 polygonCountHeight={13}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,

@@ -5,8 +5,8 @@ const TestComptForPolygonGroup = (props) => {
     return (
         <>
             <PolygonGroup
-                polygonCountLength={13}
-                polygonCountHeight={13}
+                polygonCountLength={5}
+                polygonCountHeight={5}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,
