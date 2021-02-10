@@ -1,5 +1,6 @@
 import RegularConvexPolygon from "./RegularConvexPolygon";
 import React, {useState} from "react";
+import {centeredHexagonPolygonGrid} from "./HexagonGridUtils";
 
 const usePolygonGroup = (props) => {
 
@@ -11,35 +12,8 @@ const usePolygonGroup = (props) => {
     const [polygonCountLength, setPolygonCountLength] = useState(length);
     const [polygonCountHeight, setPolygonCountHeight] = useState(height);
 
-    let originMinCoordinateX = -((length - 1) / 2);
-    let originMinCoordinateY = -((height - 1) / 2);
-
-    let topLeftCoordinateX = originMinCoordinateX + Math.floor(-originMinCoordinateY / 2);
-    let topLeftCoordinateY = originMinCoordinateY;
-
-    let tempStartX = topLeftCoordinateX;
-    let tempStartY = topLeftCoordinateY;
-
-    let tempDefaultUnitPolygon = {};
-
-    let tempAxialArray = [];
-    let tempAxialMap = {};
-    for (let j = 0; j < height; j++) {
-        tempAxialArray.push([]);
-        for (let i = 0; i < length; i++) {
-            let coordinateStr = (tempStartX + i - Math.floor(j / 2)) + "," + (tempStartY + j)
-            tempAxialArray[j].push(coordinateStr);
-            tempAxialMap[coordinateStr] = props.defaultUnitPolygon;
-        }
-    }
-
-    props.customizedPolygons.map((element, index) =>{
-        tempAxialMap[element.coordinateStr] = element.polygon;
-    });
-
-    const [axialArray, setAxialArray] = useState(tempAxialArray);
-    const [axialMap, setAxialMap] = useState(tempAxialMap);
-    const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(tempDefaultUnitPolygon);
+    const [axialArray, setAxialArray] = useState(props.axialArray);
+    const [axialMap, setAxialMap] = useState(props.axialMap);
 
     const[widthRatio, setWidthRatio] = useState(1 / polygonCountLength);
 
@@ -48,7 +22,6 @@ const usePolygonGroup = (props) => {
         polygonCountHeight,
         axialArray,
         axialMap,
-        defaultUnitPolygon,
         widthRatio
     };
 }
@@ -59,8 +32,7 @@ const PolygonGroup = (props) => {
         polygonCountHeight,
         axialArray,
         axialMap,
-        defaultUnitPolygon,
-        widthRatio
+        widthRatio,
     } = usePolygonGroup(props);
 
     const horizontalMargin = (1 / ((polygonCountLength * 2) + 1)) * 100;

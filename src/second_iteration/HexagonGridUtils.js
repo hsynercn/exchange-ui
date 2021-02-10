@@ -56,3 +56,32 @@ export const getRadialExpansionSequence = (startX, startY, value, direction) => 
     }
     return sequence;
 }
+
+export function generateHexagonPolygonGrid(height, length, tempStartX, tempStartY, defaultPolygon) {
+    let tempAxialArray = [];
+    let tempAxialMap = {};
+    for (let j = 0; j < height; j++) {
+        tempAxialArray.push([]);
+        for (let i = 0; i < length; i++) {
+            let coordinateStr = (tempStartX + i - Math.floor(j / 2)) + "," + (tempStartY + j)
+            tempAxialArray[j].push(coordinateStr);
+            tempAxialMap[coordinateStr] = JSON.parse(JSON.stringify(defaultPolygon));
+        }
+    }
+    return {tempAxialArray, tempAxialMap};
+}
+
+export function centeredHexagonPolygonGrid(length, height, defaultPolygon) {
+    let originMinCoordinateX = -((length - 1) / 2);
+    let originMinCoordinateY = -((height - 1) / 2);
+
+    let topLeftCoordinateX = originMinCoordinateX + Math.floor(-originMinCoordinateY / 2);
+    let topLeftCoordinateY = originMinCoordinateY;
+
+    let tempStartX = topLeftCoordinateX;
+    let tempStartY = topLeftCoordinateY;
+
+
+    let {tempAxialArray, tempAxialMap} = generateHexagonPolygonGrid(height, length, tempStartX, tempStartY, defaultPolygon);
+    return {tempAxialArray, tempAxialMap};
+}
