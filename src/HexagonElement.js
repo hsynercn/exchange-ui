@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import {currencyColors} from './CurrencyColors'
-import PolygonUtils, {Directions} from "./second_iteration/PolygonUtil";
+import PolygonUtils, {Directions, getOrientations} from "./second_iteration/PolygonUtil";
 import {LightenDarkenColor} from "./second_iteration/ColorUtil";
 import {getRadialExpansionSequence} from "./second_iteration/HexagonGridUtils";
 import {largeNumberFormatter} from "./second_iteration/NumberTextUtil";
@@ -126,6 +126,7 @@ class RegularConvexPolygon extends React.Component {
     }
 }
 
+
 class PolygonSample extends React.Component {
 
     constructor(props) {
@@ -217,24 +218,13 @@ class PolygonSample extends React.Component {
         }
     }
 
-    getOrientations(offsetX, offsetY) {
-        let orientationOffset = {
-        }
-        orientationOffset[Directions.NORTH] = {x:offsetX+1, y:offsetY-2};
-        orientationOffset[Directions.NORTHEAST] = {x:offsetX+2, y:offsetY-1};
-        orientationOffset[Directions.SOUTHEAST] = {x:offsetX+1, y:offsetY+1};
-        orientationOffset[Directions.SOUTH] = {x:offsetX-1, y:offsetY+2};
-        orientationOffset[Directions.SOUTHWEST] = {x:offsetX-2, y:offsetY+1};
-        orientationOffset[Directions.NORTHWEST] = {x:offsetX-1, y:offsetY-1};
-        orientationOffset[Directions.CENTER] = {x:offsetX, y:offsetY};
-        return orientationOffset;
-    }
+
 
     componentDidMount() {
 
         axios.get(`http://localhost:8080/currency`).then(response => {
 
-            let startPoints = this.getOrientations(-1,0);
+            let startPoints = getOrientations(-1,0);
 
             let currencyMap = response.data;
 
