@@ -24,7 +24,7 @@ const useCurrencyDisplay = (props) => {
 
     const [customizedPolygons, setCustomizedPolygons] = useState([]);
 
-    const [orientationX, setOrientationX] = useState(-1);
+    const [orientationX, setOrientationX] = useState(0);
     const [orientationY, setOrientationY] = useState(0);
     const [floatNumFault, setFloatNumFault] = useState(2);
 
@@ -82,7 +82,8 @@ const useCurrencyDisplay = (props) => {
                                 axialMap[polygonCoordinate].fillColor = fillColor;
                                 axialMap[polygonCoordinate].strokeColor = strokeColor;
                                 axialMap[polygonCoordinate].innerFillColor = innerFillColor;
-                                axialMap[polygonCoordinate].innerPolygonRatio = displayValue / stepValue;
+                                let innerPolygonRatio = displayValue / stepValue;
+                                axialMap[polygonCoordinate].innerPolygonRatio = innerPolygonRatio;
                                 displayValue = 0;
 
                             } else {

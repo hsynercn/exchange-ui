@@ -56,6 +56,14 @@ const useRegularConvexPolygon = (props) => {
         setInnerPolygonRatio(props.innerPolygonRatio);
         setText(props.text);
         setTextFontSize(props.textFontSize);
+
+        const tempGeneratedPointsInner = PolygonUtils.generatePoints(
+            numSides,
+            (radius + edgeOffsetLen) * props.innerPolygonRatio,
+            centerAng,
+            startAngle);
+        setPolygonCoordinatesInner(PolygonUtils.getShiftedPositiveQuadrant(tempGeneratedPointsInner, edges));
+
     }, [props]);
 
     const setTextWithFontSize = (text, textFontSize) => {
