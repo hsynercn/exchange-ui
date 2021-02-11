@@ -5,7 +5,7 @@ const TestComptForRadialCurrencyDisplay = (props) => {
     return (
         <>
             <CurrencyDisplay
-                polygonCountLength={13}
+                polygonCountLength={11}
                 polygonCountHeight={13}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,

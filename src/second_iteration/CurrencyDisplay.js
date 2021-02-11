@@ -23,7 +23,6 @@ const useCurrencyDisplay = (props) => {
     });
 
     const [customizedPolygons, setCustomizedPolygons] = useState([]);
-
     const [orientationX, setOrientationX] = useState(0);
     const [orientationY, setOrientationY] = useState(0);
     const [floatNumFault, setFloatNumFault] = useState(2);
@@ -32,9 +31,7 @@ const useCurrencyDisplay = (props) => {
         axios.get(`http://localhost:8080/currency`).then(response => {
             let currencyMap = response.data;
             let startPoints = getOrientations(orientationX, orientationY);
-
             let centralTextBlockColor = currencyColors[currencyMap.base].color;
-
             let centerPolygonCoordinate = startPoints[Directions.CENTER].x + "," + startPoints[Directions.CENTER].y;
 
             let clonedAxialMap = {...axialMap};
@@ -44,7 +41,6 @@ const useCurrencyDisplay = (props) => {
             clonedAxialMap[centerPolygonCoordinate].text = currencyMap.base;
 
             let rateMap = {};
-
             currencyMap.rates.forEach(rate => {
                 rateMap[rate.entity] = rate
             });
@@ -53,18 +49,16 @@ const useCurrencyDisplay = (props) => {
                 displayConfiguration.currencyList.forEach((currency, index) => {
                     let direction = ClockwiseHexagonDirections[index];
                     let polygonCoordinateSequence = getRadialExpansionSequence(startPoints[direction].x, startPoints[direction].y, direction);
-                    let displayValue = rateMap[currency].value.toFixed(floatNumFault);
+                    let displayValue = rateMap[currency].value;
                     let stepValue = getDiagonalStepValue(displayValue, floatNumFault);
                     let segmentCount = Math.ceil(displayValue / stepValue);
 
                     segmentCount = Math.min(segmentCount, getRadialExpansionLimit());
 
                     let currencyText = rateMap[currency].entity;
-
                     let fillColor = '#ffffff';
-                    let strokeColor = currencyColors[currency].color;
+                    let strokeColor = LightenDarkenColor(currencyColors[currency].color, -20);
                     let innerFillColor = currencyColors[currency].color;
-
                     let textBlockColor = LightenDarkenColor(innerFillColor, 30);
 
                     let sum = 0;
@@ -78,14 +72,12 @@ const useCurrencyDisplay = (props) => {
                         } else if (displayValue !== 0) {
                             if (displayValue < stepValue) {
                                 axialMap[polygonCoordinate].text = largeNumberFormatter(sum + displayValue);
-                                //axialMap[polygonCoordinate].text = currencyText;
                                 axialMap[polygonCoordinate].fillColor = fillColor;
                                 axialMap[polygonCoordinate].strokeColor = strokeColor;
                                 axialMap[polygonCoordinate].innerFillColor = innerFillColor;
                                 let innerPolygonRatio = displayValue / stepValue;
                                 axialMap[polygonCoordinate].innerPolygonRatio = innerPolygonRatio;
                                 displayValue = 0;
-
                             } else {
                                 sum += stepValue;
                                 axialMap[polygonCoordinate].text = largeNumberFormatter(sum);
@@ -114,6 +106,7 @@ const CurrencyDisplay = (props) => {
         axialArray,
         axialMap,
     } = useCurrencyDisplay(props);
+
 
     return (
         <>
