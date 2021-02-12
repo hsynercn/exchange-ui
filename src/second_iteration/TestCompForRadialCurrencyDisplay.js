@@ -1,10 +1,10 @@
 import React from "react";
-import CurrencyDisplay from "./CurrencyDisplay";
+import CurrencyGridDisplay from "./CurrencyGridDisplay";
 
 const TestComptForRadialCurrencyDisplay = (props) => {
     return (
         <>
-            <CurrencyDisplay
+            <CurrencyGridDisplay
                 polygonCountLength={11}
                 polygonCountHeight={13}
                 defaultUnitPolygon={{
@@ -12,7 +12,7 @@ const TestComptForRadialCurrencyDisplay = (props) => {
                     startAngle: 90,
                     numSides: 6,
                     fillColor: '#ffffff',
-                    strokeColor: '#000000',
+                    strokeColor: '#777777',
                     text: "",
                     textFontSize: 14,
                     innerPolygonRatio: 0.0,

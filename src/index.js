@@ -4,12 +4,17 @@ import './index.css';
 import './demo.css'
 import reportWebVitals from './reportWebVitals';
 import TestComptForRadialCurrencyDisplay from "./second_iteration/TestCompForRadialCurrencyDisplay";
+import 'semantic-ui-css/semantic.min.css';
+import CurrencyMultipleSearchSelection from "./second_iteration/CurrencyMultipleSearchSelection";
+import CurrencySearchSelection from "./second_iteration/CurrencySearchSelection";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <TestComptForRadialCurrencyDisplay/>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <TestComptForRadialCurrencyDisplay/>
+        <CurrencySearchSelection/>
+        <CurrencyMultipleSearchSelection/>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
