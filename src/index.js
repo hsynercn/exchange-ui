@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './demo.css'
 import reportWebVitals from './reportWebVitals';
-import TestComptForRadialCurrencyDisplay from "./second_iteration/TestCompForRadialCurrencyDisplay";
 import 'semantic-ui-css/semantic.min.css';
 import CurrencyMultipleSearchSelection from "./second_iteration/CurrencyMultipleSearchSelection";
 import CurrencySearchSelection from "./second_iteration/CurrencySearchSelection";
+import CurrencyManager from "./second_iteration/CurrencyManager";
 
 ReactDOM.render(
     <React.StrictMode>
-        <TestComptForRadialCurrencyDisplay/>
+        <CurrencyManager/>
         <CurrencySearchSelection/>
         <CurrencyMultipleSearchSelection/>
     </React.StrictMode>,
