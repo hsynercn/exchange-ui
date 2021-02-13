@@ -5,7 +5,7 @@ import axios from "axios";
 const useCurrencyManager = (props) => {
     const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
 
-    const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
+    const [currencyDisplaySource, setCurrencyDisplaySource] = useState("TRY");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["USD", "EUR", "GBP", "CAD", "ETH", "BTC"]);
     const [currencyVisualizationData, setCurrencyVisualizationData] = useState({
         type: currencyDisplayType,
@@ -43,9 +43,22 @@ const useCurrencyManager = (props) => {
                     });
                 });
             } else if(targetSourceCurrency in responseRateMap) {
+                currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
-            } else {
-                alert("Unsupported currency");
+                let convertedRateMap = {};
+                let divider = responseRateMap[targetSourceCurrency].value;
+                response.data.rates.forEach(rate => {
+                    convertedRateMap[rate.entity] = rate;
+                    convertedRateMap[rate.entity].value = convertedRateMap[rate.entity].value / divider;
+                });
+
+                currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+                targetDestinationCurrencies.forEach((value, index, array) => {
+                    currencyVisualizationData.destinationCurrencies.push({
+                        entity: convertedRateMap[value].entity,
+                        value: convertedRateMap[value].value
+                    });
+                });
             }
             setCurrencyVisualizationData(currencyVisualizationData);
         });
