@@ -11,8 +11,6 @@ import CurrencyManager from "./second_iteration/CurrencyManager";
 ReactDOM.render(
     <React.StrictMode>
         <CurrencyManager/>
-        <CurrencySearchSelection/>
-        <CurrencyMultipleSearchSelection/>
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -1,6 +1,6 @@
 import {Directions} from "./PolygonUtil";
 
-const MAX_RADIAL_EXPANSE_COUNT = 15;
+const MAX_RADIAL_EXPANSE_COUNT = 11;
 export const getRadialExpansionSequence = (startX, startY, direction, maxPolygonGroupMemberCount = MAX_RADIAL_EXPANSE_COUNT) => {
     let sequence = [];
     let refX = startX;

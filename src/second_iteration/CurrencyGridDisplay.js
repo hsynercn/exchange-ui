@@ -22,26 +22,32 @@ const useCurrencyGridDisplay = (props) => {
     const [orientationY, setOrientationY] = useState(0);
     const [floatNumFault, setFloatNumFault] = useState(2);
 
+    function prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap) {
+        let centralTextBlockColor = currencyColors[sourceCurrencyEntity].color;
+        let centerPolygonCoordinate = startPoints[Directions.CENTER].x + "," + startPoints[Directions.CENTER].y;
+        clonedAxialMap[centerPolygonCoordinate].fillColor = centralTextBlockColor;
+        clonedAxialMap[centerPolygonCoordinate].strokeColor = centralTextBlockColor;
+        clonedAxialMap[centerPolygonCoordinate].innerFillColor = centralTextBlockColor;
+        clonedAxialMap[centerPolygonCoordinate].text = sourceCurrencyEntity;
+    }
+
     useEffect(() => {
+
         let currencyVisualizationData = props.currencyVisualizationData;
 
         let type = currencyVisualizationData.type;
         let sourceCurrencyEntity = currencyVisualizationData.sourceCurrency.entity;
         let destinationCurrencies = currencyVisualizationData.destinationCurrencies;
 
-        if(sourceCurrencyEntity === "") {
+        if (sourceCurrencyEntity === "") {
             return;
         }
+        let clonedAxialMap = {...axialMap};
 
         let startPoints = getOrientations(orientationX, orientationY);
-        let centralTextBlockColor = currencyColors[sourceCurrencyEntity].color;
-        let centerPolygonCoordinate = startPoints[Directions.CENTER].x + "," + startPoints[Directions.CENTER].y;
 
-        let clonedAxialMap = {...axialMap};
-        clonedAxialMap[centerPolygonCoordinate].fillColor = centralTextBlockColor;
-        clonedAxialMap[centerPolygonCoordinate].strokeColor = centralTextBlockColor;
-        clonedAxialMap[centerPolygonCoordinate].innerFillColor = centralTextBlockColor;
-        clonedAxialMap[centerPolygonCoordinate].text = sourceCurrencyEntity;
+        prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap);
+
 
         if (type === "radial") {
             destinationCurrencies.forEach((currency, index) => {
@@ -58,30 +64,35 @@ const useCurrencyGridDisplay = (props) => {
 
                 let sum = 0;
                 polygonCoordinateSequence.forEach((polygonCoordinate, index) => {
-                    let polygonModified = clonedAxialMap[polygonCoordinate];
                     if (index === 0) {
-                        polygonModified.textFontSize = 20;
-                        polygonModified.text = currencyText;
-                        polygonModified.fillColor = textBlockColor;
-                        polygonModified.strokeColor = textBlockColor;
-                        polygonModified.innerFillColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].textFontSize = 20;
+                        clonedAxialMap[polygonCoordinate].text = currencyText;
+                        clonedAxialMap[polygonCoordinate].fillColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].strokeColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].innerFillColor = textBlockColor;
                     } else if (displayValue !== 0) {
                         if (displayValue < stepValue) {
-                            polygonModified.text = largeNumberFormatter(sum + displayValue);
-                            polygonModified.fillColor = fillColor;
-                            polygonModified.strokeColor = strokeColor;
-                            polygonModified.innerFillColor = innerFillColor;
+                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum + displayValue);
+                            clonedAxialMap[polygonCoordinate].fillColor = fillColor;
+                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
                             let innerPolygonRatio = displayValue / stepValue;
-                            polygonModified.innerPolygonRatio = innerPolygonRatio;
+                            clonedAxialMap[polygonCoordinate].innerPolygonRatio = innerPolygonRatio;
                             displayValue = 0;
                         } else {
                             sum += stepValue;
-                            polygonModified.text = largeNumberFormatter(sum);
-                            polygonModified.fillColor = innerFillColor;
-                            polygonModified.strokeColor = strokeColor;
-                            polygonModified.innerFillColor = innerFillColor;
+                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum);
+                            clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
+                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
                             displayValue -= stepValue;
                         }
+                    } else {
+                        clonedAxialMap[polygonCoordinate].text = "";
+                        clonedAxialMap[polygonCoordinate].fillColor = defaultUnitPolygon.fillColor;
+                        clonedAxialMap[polygonCoordinate].strokeColor = defaultUnitPolygon.strokeColor;
+                        clonedAxialMap[polygonCoordinate].innerFillColor = defaultUnitPolygon.innerFillColor;
+                        clonedAxialMap[polygonCoordinate].innerPolygonRatio = defaultUnitPolygon.innerPolygonRatio;
                     }
                 });
             });
