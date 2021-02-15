@@ -1,9 +1,8 @@
 import PolygonGroup from "./PolygonGroup";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import {ClockwiseHexagonDirections, Directions, getOrientations} from "./PolygonUtil";
-import {currencyColors} from "../CurrencyColors";
-import {centeredHexagonPolygonGrid, getRadialExpansionLimit, getRadialExpansionSequence} from "./HexagonGridUtils";
+import {getCurrencyColor} from "../CurrencyColors";
+import {centeredHexagonPolygonGrid, getRadialExpansionSequence} from "./HexagonGridUtils";
 import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
 import {LightenDarkenColor} from "./ColorUtil";
 
@@ -23,7 +22,7 @@ const useCurrencyGridDisplay = (props) => {
     const [floatNumFault, setFloatNumFault] = useState(2);
 
     function prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap) {
-        let centralTextBlockColor = currencyColors[sourceCurrencyEntity].color;
+        let centralTextBlockColor = getCurrencyColor(sourceCurrencyEntity);
         let centerPolygonCoordinate = startPoints[Directions.CENTER].x + "," + startPoints[Directions.CENTER].y;
         clonedAxialMap[centerPolygonCoordinate].fillColor = centralTextBlockColor;
         clonedAxialMap[centerPolygonCoordinate].strokeColor = centralTextBlockColor;
@@ -58,14 +57,14 @@ const useCurrencyGridDisplay = (props) => {
 
                 let currencyText = currency.entity;
                 let fillColor = '#ffffff';
-                let strokeColor = LightenDarkenColor(currencyColors[currency.entity].color, -20);
-                let innerFillColor = currencyColors[currency.entity].color;
+                let strokeColor = LightenDarkenColor(getCurrencyColor(currency.entity), -20);
+                let innerFillColor = getCurrencyColor(currency.entity);
                 let textBlockColor = LightenDarkenColor(innerFillColor, 30);
 
                 let sum = 0;
                 polygonCoordinateSequence.forEach((polygonCoordinate, index) => {
                     if (index === 0) {
-                        clonedAxialMap[polygonCoordinate].textFontSize = 15;
+                        clonedAxialMap[polygonCoordinate].textFontSize = 20;
                         clonedAxialMap[polygonCoordinate].text = currencyText;
                         clonedAxialMap[polygonCoordinate].fillColor = textBlockColor;
                         clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;

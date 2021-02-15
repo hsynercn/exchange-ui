@@ -1,6 +1,6 @@
 import React from "react";
 import axios from 'axios';
-import {currencyColors} from './CurrencyColors'
+import {getCurrencyColor} from './CurrencyColors'
 import PolygonUtils, {Directions, getOrientations} from "./second_iteration/PolygonUtil";
 import {LightenDarkenColor} from "./second_iteration/ColorUtil";
 import {getRadialExpansionSequence} from "./second_iteration/HexagonGridUtils";
@@ -235,7 +235,7 @@ class PolygonSample extends React.Component {
             let centerPolygon = this.state.axialMap[startPoints[Directions.CENTER].x +"," + startPoints[Directions.CENTER].y];
 
             centerPolygon.current.setTextWithFontSize(currencyMap.base, 20);
-            let centralTextBlockColor = currencyColors[currencyMap.base].color;
+            let centralTextBlockColor = getCurrencyColor(currencyMap.base);
             centralTextBlockColor = LightenDarkenColor(centralTextBlockColor, 0);
 
             centerPolygon.current.setColor(centralTextBlockColor, centralTextBlockColor, centralTextBlockColor);
@@ -255,22 +255,22 @@ class PolygonSample extends React.Component {
 
 
             this.renderDirection(rateMap[northCurrency].entity, startPoints[Directions.NORTH].x, startPoints[Directions.NORTH].y, rateMap[northCurrency].value, Directions.NORTH, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[northCurrency].color, currencyColors[northCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(northCurrency), getCurrencyColor(northCurrency), this.state.axialMap);
 
             this.renderDirection(rateMap[northEastCurrency].entity, startPoints[Directions.NORTHEAST].x, startPoints[Directions.NORTHEAST].y, rateMap[northEastCurrency].value, Directions.NORTHEAST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[northEastCurrency].color, currencyColors[northEastCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(northEastCurrency), getCurrencyColor(northEastCurrency), this.state.axialMap);
 
             this.renderDirection(rateMap[southEastCurrency].entity, startPoints[Directions.SOUTHEAST].x, startPoints[Directions.SOUTHEAST].y, rateMap[southEastCurrency].value, Directions.SOUTHEAST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[southEastCurrency].color, currencyColors[southEastCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(southEastCurrency), getCurrencyColor(southEastCurrency), this.state.axialMap);
 
             this.renderDirection(rateMap[southCurrency].entity, startPoints[Directions.SOUTH].x, startPoints[Directions.SOUTH].y, rateMap[southCurrency].value, Directions.SOUTH, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[southCurrency].color, currencyColors[southCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(southCurrency), getCurrencyColor(southCurrency), this.state.axialMap);
 
             this.renderDirection(rateMap[southWestCurrency].entity, startPoints[Directions.SOUTHWEST].x, startPoints[Directions.SOUTHWEST].y, rateMap[southWestCurrency].value, Directions.SOUTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[southWestCurrency].color, currencyColors[southWestCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(southWestCurrency), getCurrencyColor(southWestCurrency), this.state.axialMap);
 
             this.renderDirection(rateMap[northWestCurrency].entity, startPoints[Directions.NORTHWEST].x, startPoints[Directions.NORTHWEST].y, rateMap[northWestCurrency].value, Directions.NORTHWEST, this.state.maxPolygonGroupMemberCount,
-                '#ffffff', currencyColors[northWestCurrency].color, currencyColors[northWestCurrency].color, this.state.axialMap);
+                '#ffffff', getCurrencyColor(northWestCurrency), getCurrencyColor(northWestCurrency), this.state.axialMap);
         });
 
 

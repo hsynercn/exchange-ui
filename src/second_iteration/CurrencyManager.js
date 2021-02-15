@@ -8,8 +8,8 @@ import {Dropdown} from "semantic-ui-react";
 const useCurrencyManager = (props) => {
     const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
 
-    const [currencyDisplaySource, setCurrencyDisplaySource] = useState("TRY");
-    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["USD", "EUR", "GBP", "CAD", "ETH", "BTC"]);
+    const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
+    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "CAD", "ETH", "BTC"]);
     const [currencyVisualizationData, setCurrencyVisualizationData] = useState({
         type: currencyDisplayType,
         sourceCurrency: {entity: currencyDisplaySource},
@@ -22,7 +22,7 @@ const useCurrencyManager = (props) => {
         let i = 0;
         for (i = targetDestinationCurrencies.length; i < 6; i++) {
             currencyVisualizationData.destinationCurrencies.push({
-                entity: "EMPTY",
+                entity: "---",
                 value: 0.0
             });
         }
