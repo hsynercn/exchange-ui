@@ -18,6 +18,16 @@ const useCurrencyManager = (props) => {
 
     const [selectableCurrencyPool, setSelectableCurrencyPool] = useState([]);
 
+    function formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData) {
+        let i = 0;
+        for (i = targetDestinationCurrencies.length; i < 6; i++) {
+            currencyVisualizationData.destinationCurrencies.push({
+                entity: "EMPTY",
+                value: 0.0
+            });
+        }
+    }
+
     useEffect(() => {
         async function fetchCurrencyData() {
             axios.get(`http://localhost:8080/currency`).then(response => {
@@ -39,12 +49,16 @@ const useCurrencyManager = (props) => {
                 currencyVisualizationData.type = currencyDisplayType;
                 if (targetSourceCurrency === responseBaseCurrency) {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+
                     targetDestinationCurrencies.forEach((value, index, array) => {
                         currencyVisualizationData.destinationCurrencies.push({
                             entity: responseRateMap[value].entity,
                             value: responseRateMap[value].value
                         });
                     });
+
+                    formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData);
+
                 } else if (targetSourceCurrency in responseRateMap) {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
@@ -55,20 +69,32 @@ const useCurrencyManager = (props) => {
                         convertedRateMap[rate.entity].value = convertedRateMap[rate.entity].value / divider;
                     });
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+
                     targetDestinationCurrencies.forEach((value, index, array) => {
                         currencyVisualizationData.destinationCurrencies.push({
                             entity: convertedRateMap[value].entity,
                             value: convertedRateMap[value].value
                         });
                     });
+
+                    formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData);
+
+
                 }
                 setCurrencyVisualizationData(currencyVisualizationData);
             });
         }
 
         fetchCurrencyData();
-    }, [props, currencyDisplaySource]);
-    return {currencyVisualizationData, selectableCurrencyPool, currencyDisplaySource, setCurrencyDisplaySource};
+    }, [props, currencyDisplaySource, currencyDisplayDestinations]);
+    return {
+        currencyVisualizationData,
+        selectableCurrencyPool,
+        currencyDisplaySource,
+        setCurrencyDisplaySource,
+        currencyDisplayDestinations,
+        setCurrencyDisplayDestinations
+    };
 }
 
 const CurrencyManager = (props) => {
@@ -76,7 +102,9 @@ const CurrencyManager = (props) => {
         currencyVisualizationData,
         selectableCurrencyPool,
         currencyDisplaySource,
-        setCurrencyDisplaySource
+        setCurrencyDisplaySource,
+        currencyDisplayDestinations,
+        setCurrencyDisplayDestinations
     } = useCurrencyManager(props);
     return (
         <>
@@ -99,7 +127,9 @@ const CurrencyManager = (props) => {
             <CurrencySearchSelection setValue={setCurrencyDisplaySource}
                                      options={selectableCurrencyPool}
                                      value={currencyDisplaySource}/>
-            <CurrencyMultipleSearchSelection/>
+            <CurrencyMultipleSearchSelection setValue={setCurrencyDisplayDestinations}
+                                             options={selectableCurrencyPool}
+                                             value={currencyDisplayDestinations}/>
         </>
     )
 }

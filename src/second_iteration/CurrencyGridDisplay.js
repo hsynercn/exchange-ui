@@ -65,10 +65,10 @@ const useCurrencyGridDisplay = (props) => {
                 let sum = 0;
                 polygonCoordinateSequence.forEach((polygonCoordinate, index) => {
                     if (index === 0) {
-                        clonedAxialMap[polygonCoordinate].textFontSize = 20;
+                        clonedAxialMap[polygonCoordinate].textFontSize = 15;
                         clonedAxialMap[polygonCoordinate].text = currencyText;
                         clonedAxialMap[polygonCoordinate].fillColor = textBlockColor;
-                        clonedAxialMap[polygonCoordinate].strokeColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
                         clonedAxialMap[polygonCoordinate].innerFillColor = textBlockColor;
                     } else if (displayValue !== 0) {
                         if (displayValue < stepValue) {
