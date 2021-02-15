@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import './demo.css'
+import './obsolete/demo.css'
 import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css';
-import CurrencyMultipleSearchSelection from "./second_iteration/CurrencyMultipleSearchSelection";
-import CurrencySearchSelection from "./second_iteration/CurrencySearchSelection";
-import CurrencyManager from "./second_iteration/CurrencyManager";
+import CurrencyMultipleSearchSelection from "./hexagon_currency_app/CurrencyMultipleSearchSelection";
+import CurrencySearchSelection from "./hexagon_currency_app/CurrencySearchSelection";
+import CurrencyManager from "./hexagon_currency_app/CurrencyManager";
 
 ReactDOM.render(
     <React.StrictMode>

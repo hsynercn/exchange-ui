@@ -1,5 +1,5 @@
 import React from "react";
-import './GitHubCards.css';
+import './obsolete/GitHubCards.css';
 import axios from 'axios';
 
 class CurrencyElement extends React.Component {
