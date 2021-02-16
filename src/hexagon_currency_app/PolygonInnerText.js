@@ -5,14 +5,20 @@ const PolygonInnerText = (props) => {
     return (
         <>
             {
-                props.lines.map((line, index) => <text style={
-                    {
-                        x:(40 + index * 20) + "%",
-                        textAnchor: "middle",
-                        fontFamily: "Arial"
-                    }
-                }>line</text>)
+                props.text.split("\n").map((line, index) => <text
+                    x={"50%"}
+                    y={"50%"}
+                    // y={((40 + index * 20) + "%")}
+                    textAnchor={"middle"}
+                    dominant-baseline={"middle"}
+                    fontFamily={"Arial"}
+                    fill={"black"}
+                    fontSize={"125%"}
+                    fontWeight={"normal"}
+                >{line}</text>)
             }
         </>
     );
 }
+
+export default PolygonInnerText;

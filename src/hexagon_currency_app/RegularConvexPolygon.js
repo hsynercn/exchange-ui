@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import PolygonUtils from "./PolygonUtil";
+import PolygonInnerText from "./PolygonInnerText";
 
 const useRegularConvexPolygon = (props) => {
 
@@ -150,10 +151,7 @@ const RegularConvexPolygon = (props) => {
                 fill: innerFillColor,
                 verticalAlign: 'top'
             }}/>
-            <text x="50%" y="57%" style={{whiteSpace: "pre-line"}} textAnchor="middle" fontFamily="Arial"
-                  fill="black" fontSize={textFontSize} fontWeight="normal">
-                {text}
-            </text>
+            <PolygonInnerText text={text}/>
         </svg>
     );
 }
