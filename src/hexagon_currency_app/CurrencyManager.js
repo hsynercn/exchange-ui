@@ -40,6 +40,12 @@ const useCurrencyManager = (props) => {
                     responseCurrencyPool.push({key: rate.entity, text: rate.entity, value: rate.entity});
                 });
 
+                responseCurrencyPool.sort(function(a, b) {
+                    let textA = a.key.toUpperCase();
+                    let textB = b.key.toUpperCase();
+                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                });
+
                 setSelectableCurrencyPool(responseCurrencyPool)
 
                 let targetSourceCurrency = currencyDisplaySource;

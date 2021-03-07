@@ -10,7 +10,7 @@ export const largeNumberFormatter = (value) => {
         valueScale++;
     }
     let decimalDigit = value % 1 === 0 ? 1 : 2;
-    decimalDigit =  (value / 100) > 1 ? 1 : 2;
+    decimalDigit =  (value / 100) > 1 ? 1 : decimalDigit;
     return value.toFixed(decimalDigit) + expression[valueScale];
 }
 
