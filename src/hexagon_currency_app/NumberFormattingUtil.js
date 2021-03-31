@@ -1,5 +1,5 @@
-export const largeNumberFormatter = (value) => {
-
+export const largeNumberFormatter = (valueIn) => {
+    let value = valueIn;
     let expression = ["", "K", "M", "G", "T", "P", "E"];
 
     let practicalLimit = 6;

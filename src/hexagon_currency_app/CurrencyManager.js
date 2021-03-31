@@ -9,7 +9,7 @@ const useCurrencyManager = (props) => {
     const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
-    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "CAD", "ETH", "BTC"]);
+    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
     const [currencyVisualizationData, setCurrencyVisualizationData] = useState({
         type: currencyDisplayType,
         sourceCurrency: {entity: currencyDisplaySource},
@@ -32,15 +32,15 @@ const useCurrencyManager = (props) => {
         async function fetchCurrencyData() {
             axios.get(`http://localhost:8080/currency`).then(response => {
 
-                let responseBaseCurrency = response.data.base;
+                let responseBaseCurrency = response.data.main;
                 let responseRateMap = {};
                 let responseCurrencyPool = [];
                 response.data.rates.forEach(rate => {
-                    responseRateMap[rate.entity] = rate;
-                    responseCurrencyPool.push({key: rate.entity, text: rate.entity, value: rate.entity});
+                    responseRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt)};
+                    responseCurrencyPool.push({key: rate.den, text: rate.den, value: parseFloat(rate.rt)});
                 });
 
-                responseCurrencyPool.sort(function(a, b) {
+                responseCurrencyPool.sort(function (a, b) {
                     let textA = a.key.toUpperCase();
                     let textB = b.key.toUpperCase();
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
@@ -57,10 +57,13 @@ const useCurrencyManager = (props) => {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
                     targetDestinationCurrencies.forEach((value, index, array) => {
-                        currencyVisualizationData.destinationCurrencies.push({
-                            entity: responseRateMap[value].entity,
-                            value: responseRateMap[value].value
-                        });
+                        if (value in responseRateMap) {
+                            currencyVisualizationData.destinationCurrencies.push({
+                                entity: responseRateMap[value].entity,
+                                value: responseRateMap[value].value
+                            });
+                        }
+
                     });
 
                     formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData);
