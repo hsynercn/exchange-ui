@@ -37,7 +37,7 @@ const useCurrencyManager = (props) => {
                 let responseCurrencyPool = [];
                 response.data.rates.forEach(rate => {
                     responseRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt)};
-                    responseCurrencyPool.push({key: rate.den, text: rate.den, value: parseFloat(rate.rt)});
+                    responseCurrencyPool.push({key: rate.den, text: rate.den, value: rate.den});
                 });
 
                 responseCurrencyPool.sort(function (a, b) {
@@ -46,7 +46,7 @@ const useCurrencyManager = (props) => {
                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                 });
 
-                setSelectableCurrencyPool(responseCurrencyPool)
+                setSelectableCurrencyPool(responseCurrencyPool);
 
                 let targetSourceCurrency = currencyDisplaySource;
                 let targetDestinationCurrencies = currencyDisplayDestinations;
@@ -74,8 +74,7 @@ const useCurrencyManager = (props) => {
                     let convertedRateMap = {};
                     let divider = responseRateMap[targetSourceCurrency].value;
                     response.data.rates.forEach(rate => {
-                        convertedRateMap[rate.entity] = rate;
-                        convertedRateMap[rate.entity].value = convertedRateMap[rate.entity].value / divider;
+                        convertedRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt) / divider};
                     });
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 

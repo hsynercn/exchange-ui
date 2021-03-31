@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
 import {Dropdown} from 'semantic-ui-react'
 
-const MAX_FRUITS_SELECTION = 6;
+const MAX_SELECTION = 6;
 
 const CurrencyMultipleSearchSelection = (props) => {
     const [selectedCurrencies, setSelectedCurrencies] = useState(props.value);
 
     const handleChange = (e, data) => {
-        if (data.value.length <= MAX_FRUITS_SELECTION) {
+        if (data.value.length <= MAX_SELECTION) {
             setSelectedCurrencies(data.value);
             props.setValue(data.value);
         }
