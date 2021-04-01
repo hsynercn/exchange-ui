@@ -6,7 +6,8 @@ import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
 import {Dropdown} from "semantic-ui-react";
 
 const useCurrencyManager = (props) => {
-    const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
+    //const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
+    const [currencyDisplayType, setCurrencyDisplayType] = useState("flower");
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
@@ -116,6 +117,25 @@ const CurrencyManager = (props) => {
     } = useCurrencyManager(props);
     return (
         <>
+            {currencyVisualizationData.type == "flower" &&
+            <CurrencyGridDisplay
+                currencyVisualizationData={currencyVisualizationData}
+                polygonCountLength={5}
+                polygonCountHeight={5}
+                defaultUnitPolygon={{
+                    edgeOffsetRatio: 0.036,
+                    startAngle: 90,
+                    numSides: 6,
+                    fillColor: '#ffffff',
+                    strokeColor: '#777777',
+                    text: "",
+                    textFontSize: 14,
+                    innerPolygonRatio: 0.0,
+                    innerFillColor: "",
+                }}
+            />
+            }
+            {currencyVisualizationData.type == "radial" &&
             <CurrencyGridDisplay
                 currencyVisualizationData={currencyVisualizationData}
                 polygonCountLength={13}
@@ -132,6 +152,8 @@ const CurrencyManager = (props) => {
                     innerFillColor: "",
                 }}
             />
+            }
+
             <CurrencySearchSelection setValue={setCurrencyDisplaySource}
                                      options={selectableCurrencyPool}
                                      value={currencyDisplaySource}/>
