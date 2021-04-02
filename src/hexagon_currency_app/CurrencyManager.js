@@ -120,8 +120,8 @@ const CurrencyManager = (props) => {
             {currencyVisualizationData.type == "flower" &&
             <CurrencyGridDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                polygonCountLength={5}
-                polygonCountHeight={5}
+                polygonCountLength={3}
+                polygonCountHeight={3}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,
