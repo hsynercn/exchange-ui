@@ -1,6 +1,6 @@
 import PolygonGroup from "./PolygonGroup";
 import React, {useEffect, useState} from "react";
-import {ClockwiseHexagonDirections, Directions, getOrientations} from "./PolygonUtil";
+import {ClockwiseHexagonDirections, Directions, getOrientations, HexagonalDisplayType} from "./PolygonUtil";
 import {getCurrencyColor} from "../CurrencyColors";
 import {centeredHexagonPolygonGrid, getRadialExpansionSequence} from "./HexagonGridUtils";
 import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
@@ -48,7 +48,7 @@ const useCurrencyGridDisplay = (props) => {
         prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap);
 
 
-        if (type === "radial") {
+        if (type === HexagonalDisplayType.RADIAL_GRID) {
             destinationCurrencies.forEach((currency, index) => {
                 let direction = ClockwiseHexagonDirections[index];
                 let polygonCoordinateSequence = getRadialExpansionSequence(startPoints[direction].x, startPoints[direction].y, direction);

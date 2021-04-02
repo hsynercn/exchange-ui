@@ -4,10 +4,11 @@ import axios from "axios";
 import CurrencySearchSelection from "./CurrencySearchSelection";
 import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
 import {Dropdown} from "semantic-ui-react";
+import {HexagonalDisplayType} from "./PolygonUtil";
 
 const useCurrencyManager = (props) => {
-    //const [currencyDisplayType, setCurrencyDisplayType] = useState("radial");
-    const [currencyDisplayType, setCurrencyDisplayType] = useState("flower");
+    const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_GRID);
+    //const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_CENTERED);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
@@ -102,7 +103,8 @@ const useCurrencyManager = (props) => {
         currencyDisplaySource,
         setCurrencyDisplaySource,
         currencyDisplayDestinations,
-        setCurrencyDisplayDestinations
+        setCurrencyDisplayDestinations,
+        currencyDisplayType
     };
 }
 
@@ -113,15 +115,16 @@ const CurrencyManager = (props) => {
         currencyDisplaySource,
         setCurrencyDisplaySource,
         currencyDisplayDestinations,
-        setCurrencyDisplayDestinations
+        setCurrencyDisplayDestinations,
+        currencyDisplayType
     } = useCurrencyManager(props);
     return (
         <>
-            {currencyVisualizationData.type == "flower" &&
+            {currencyDisplayType == HexagonalDisplayType.RADIAL_GRID &&
             <CurrencyGridDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                polygonCountLength={3}
-                polygonCountHeight={3}
+                polygonCountLength={13}
+                polygonCountHeight={13}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,
@@ -135,11 +138,12 @@ const CurrencyManager = (props) => {
                 }}
             />
             }
-            {currencyVisualizationData.type == "radial" &&
+
+            {currencyDisplayType == HexagonalDisplayType.RADIAL_CENTERED &&
             <CurrencyGridDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                polygonCountLength={13}
-                polygonCountHeight={13}
+                polygonCountLength={3}
+                polygonCountHeight={3}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,

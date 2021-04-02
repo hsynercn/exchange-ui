@@ -47,6 +47,11 @@ const PolygonUtils = {
 
 
 export default PolygonUtils;
+export const HexagonalDisplayType = {
+    RADIAL_GRID: "RADIAL_GRID",
+    RADIAL_CENTERED: "RADIAL_CENTERED",
+    BASIC_CENTERED: "BASIC_CENTERED",
+}
 export const Directions = {
     NORTH: "NORTH",
     SOUTH: "SOUTH",
