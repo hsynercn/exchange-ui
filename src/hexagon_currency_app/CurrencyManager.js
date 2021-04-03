@@ -5,10 +5,11 @@ import CurrencySearchSelection from "./CurrencySearchSelection";
 import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
 import {Dropdown} from "semantic-ui-react";
 import {HexagonalDisplayType} from "./PolygonUtil";
+import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
 
 const useCurrencyManager = (props) => {
-    const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_GRID);
-    //const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_CENTERED);
+    //const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_GRID);
+    const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_CENTERED);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
@@ -140,10 +141,9 @@ const CurrencyManager = (props) => {
             }
 
             {currencyDisplayType == HexagonalDisplayType.RADIAL_CENTERED &&
-            <CurrencyGridDisplay
+            <CurrencyCenteredDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                polygonCountLength={3}
-                polygonCountHeight={3}
+                edgeLength={1}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,

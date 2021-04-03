@@ -2,7 +2,7 @@ import PolygonGroup from "./PolygonGroup";
 import React, {useEffect, useState} from "react";
 import {ClockwiseHexagonDirections, Directions, getOrientations, HexagonalDisplayType} from "./PolygonUtil";
 import {getCurrencyColor} from "../CurrencyColors";
-import {centeredHexagonPolygonGrid, getRadialExpansionSequence} from "./HexagonGridUtils";
+import {initHexagonPolygonRectangleGrid, getRadialExpansionSequence} from "./HexagonGridUtils";
 import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
 import {LightenDarkenColor} from "./ColorUtil";
 
@@ -11,7 +11,7 @@ const useCurrencyGridDisplay = (props) => {
     const [polygonCountHeight, setPolygonCountHeight] = useState(props.polygonCountHeight);
     const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(props.defaultUnitPolygon);
 
-    let {tempAxialArray, tempAxialMap} = centeredHexagonPolygonGrid(polygonCountLength, polygonCountHeight, defaultUnitPolygon);
+    let {tempAxialArray, tempAxialMap} = initHexagonPolygonRectangleGrid(polygonCountLength, polygonCountHeight, defaultUnitPolygon);
 
     const [axialArray, setAxialArray] = useState(tempAxialArray);
     const [axialMap, setAxialMap] = useState(tempAxialMap);

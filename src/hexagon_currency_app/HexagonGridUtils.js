@@ -72,7 +72,7 @@ export function generateHexagonPolygonGrid(height, length, tempStartX, tempStart
     return {tempAxialArray, tempAxialMap};
 }
 
-export function centeredHexagonPolygonGrid(length, height, defaultPolygon) {
+export function initHexagonPolygonRectangleGrid(length, height, defaultPolygon) {
     let originMinCoordinateX = -((length - 1) / 2);
     let originMinCoordinateY = -((height - 1) / 2);
 
@@ -84,6 +84,32 @@ export function centeredHexagonPolygonGrid(length, height, defaultPolygon) {
 
     let {tempAxialArray, tempAxialMap} = generateHexagonPolygonGrid(height, length, tempStartX, tempStartY, defaultPolygon);
     return {tempAxialArray, tempAxialMap};
+}
+
+export function initHexagonPolygonCenteredGrid(edgeLength, defaultPolygon) {
+    let tempAxialArray = [];
+    let tempAxialMap = {};
+    let tempStartX = 0;
+    let tempStartY = -(edgeLength - 1);
+
+    console.log("VVVVVVVVVVVVVVVVVV");
+    for (let i = 0; i < edgeLength; i++) {
+
+        console.log("i = " + i + " *************************");
+
+        tempAxialArray.push([]);
+        for (let j = 0; j < edgeLength + i; j++) {
+            let coordinateStr = (tempStartX + j) + "," + (tempStartY)
+            console.log(">" + i + " , " + j + " >> " + coordinateStr);
+            tempAxialArray[i].push(coordinateStr);
+            tempAxialMap[coordinateStr] = JSON.parse(JSON.stringify(defaultPolygon));
+        }
+
+        tempStartY++;
+        tempStartX--;
+    }
+    return {tempAxialArray, tempAxialMap};
+
 }
 
 export function getRadialExpansionLimit() {
