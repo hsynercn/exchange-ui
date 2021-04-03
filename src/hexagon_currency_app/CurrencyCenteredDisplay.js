@@ -7,17 +7,47 @@ const useCurrencyCenteredDisplay = (props) => {
     const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(props.defaultUnitPolygon);
 
     let {tempAxialArray, tempAxialMap} = initHexagonPolygonCenteredGrid(edgeLength, defaultUnitPolygon);
-    return {none:"none"};
+
+    const [axialArray, setAxialArray] = useState(tempAxialArray);
+    const [axialMap, setAxialMap] = useState(tempAxialMap);
+    const [customizedPolygons, setCustomizedPolygons] = useState([]);
+
+    return {
+        edgeLength,
+        customizedPolygons,
+        axialArray,
+        axialMap
+    };
 }
 
 const CurrencyCenteredDisplay = (props) => {
     const {
-        none
+        edgeLength,
+        customizedPolygons,
+        axialArray,
+        axialMap
     } = useCurrencyCenteredDisplay(props);
 
     return (
         <>
-            none
+            <PolygonGroup
+                polygonCountLength={2 * edgeLength - 1}
+                polygonCountHeight={2 * edgeLength - 1}
+                customizedPolygons={customizedPolygons}
+                axialArray={axialArray}
+                axialMap={axialMap}
+                defaultUnitPolygon={{
+                    edgeOffsetRatio: 0.036,
+                    startAngle: 90,
+                    numSides: 6,
+                    fillColor: '#ffffff',
+                    strokeColor: '#000000',
+                    text: "",
+                    textFontSize: 14,
+                    innerPolygonRatio: 0.0,
+                    innerFillColor: "",
+                }}
+            />
         </>
     );
 }

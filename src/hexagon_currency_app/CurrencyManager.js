@@ -143,7 +143,7 @@ const CurrencyManager = (props) => {
             {currencyDisplayType == HexagonalDisplayType.RADIAL_CENTERED &&
             <CurrencyCenteredDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                edgeLength={1}
+                edgeLength={5}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,

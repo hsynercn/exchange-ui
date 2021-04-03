@@ -92,22 +92,30 @@ export function initHexagonPolygonCenteredGrid(edgeLength, defaultPolygon) {
     let tempStartX = 0;
     let tempStartY = -(edgeLength - 1);
 
-    console.log("VVVVVVVVVVVVVVVVVV");
     for (let i = 0; i < edgeLength; i++) {
-
-        console.log("i = " + i + " *************************");
-
         tempAxialArray.push([]);
         for (let j = 0; j < edgeLength + i; j++) {
             let coordinateStr = (tempStartX + j) + "," + (tempStartY)
-            console.log(">" + i + " , " + j + " >> " + coordinateStr);
             tempAxialArray[i].push(coordinateStr);
             tempAxialMap[coordinateStr] = JSON.parse(JSON.stringify(defaultPolygon));
         }
-
         tempStartY++;
         tempStartX--;
     }
+
+    tempStartX = -(edgeLength - 1);
+    tempStartY = 1;
+
+    for (let i = 0; i < edgeLength - 1; i++) {
+        tempAxialArray.push([]);
+        for (let j = 0; j < (2 * edgeLength) - 2 - i; j++) {
+            let coordinateStr = (tempStartX + j) + "," + (tempStartY)
+            tempAxialArray[i + edgeLength].push(coordinateStr);
+            tempAxialMap[coordinateStr] = JSON.parse(JSON.stringify(defaultPolygon));
+        }
+        tempStartY++;
+    }
+
     return {tempAxialArray, tempAxialMap};
 
 }
