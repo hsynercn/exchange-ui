@@ -99,7 +99,13 @@ const useCurrencyGridDisplay = (props) => {
         setAxialMap(clonedAxialMap);
 
     }, [props]);
-    return {polygonCountLength, polygonCountHeight, defaultUnitPolygon, customizedPolygons, axialArray, axialMap};
+    return {
+        polygonCountLength,
+        polygonCountHeight,
+        defaultUnitPolygon,
+        customizedPolygons,
+        axialArray,
+        axialMap};
 }
 
 const CurrencyGridDisplay = (props) => {
