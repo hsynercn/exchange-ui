@@ -1,5 +1,18 @@
 import RegularConvexPolygon from "./RegularConvexPolygon";
 import React, {useState} from "react";
+import {PolygonType} from "./PolygonUtil";
+
+function getPolygonGroupType(axialArray) {
+    let arrayLength = axialArray.length;
+    let i = 0;
+    while (i < arrayLength) {
+        if (arrayLength !== axialArray[i].length) {
+            return PolygonType.CENTERED;
+        }
+        i++;
+    }
+    return PolygonType.GRID;
+}
 
 const usePolygonGroup = (props) => {
 
@@ -14,15 +27,79 @@ const usePolygonGroup = (props) => {
     const [axialArray, setAxialArray] = useState(props.axialArray);
     const [axialMap, setAxialMap] = useState(props.axialMap);
 
-    const[widthRatio, setWidthRatio] = useState(1 / polygonCountLength);
+    const [widthRatio, setWidthRatio] = useState(1 / polygonCountLength);
+
+    let layoutType = getPolygonGroupType(axialArray);
+
+    const [groupLayoutType, setGroupLayoutType] = useState(layoutType);
 
     return {
         polygonCountLength,
         polygonCountHeight,
         axialArray,
         axialMap,
-        widthRatio
+        widthRatio,
+        groupLayoutType
     };
+}
+
+function generateRectangleGridMargins(axialArray, index, dynamicStyle, horizontalMargin, verticalMargin) {
+    if (axialArray.length === index + 1) {
+        dynamicStyle = {
+            marginRight: horizontalMargin + "%",
+        };
+    } else if (index % 2 === 0) {
+        if (index === 0) {
+            dynamicStyle = {
+                marginRight: horizontalMargin + "%",
+                marginBottom: "-" + verticalMargin + "%",
+            };
+        } else {
+            dynamicStyle = {
+                marginRight: horizontalMargin + "%",
+                marginBottom: "-" + verticalMargin + "%",
+            };
+        }
+    } else {
+        dynamicStyle = {
+            marginLeft: horizontalMargin + "%",
+            marginBottom: "-" + verticalMargin + "%",
+        };
+    }
+    return dynamicStyle;
+}
+
+function generateCenteredGridMargins(polygonCountLength, row, tempWidthRatio, axialArray, index, dynamicStyle, horizontalMargin, verticalMargin) {
+    let space = polygonCountLength - row.length;
+
+    tempWidthRatio = 1 / row.length;
+    if (axialArray.length === index + 1) {
+        dynamicStyle = {
+            marginLeft: (horizontalMargin * space) + "%",
+            marginRight: (horizontalMargin * space) + "%",
+        };
+    } else if (index % 2 === 0) {
+        if (index === 0) {
+            dynamicStyle = {
+                marginLeft: (horizontalMargin * space) + "%",
+                marginBottom: "-" + verticalMargin + "%",
+                marginRight: (horizontalMargin * space) + "%",
+            };
+        } else {
+            dynamicStyle = {
+                marginLeft: (horizontalMargin * space) + "%",
+                marginBottom: "-" + verticalMargin + "%",
+                marginRight: (horizontalMargin * space) + "%",
+            };
+        }
+    } else {
+        dynamicStyle = {
+            marginLeft: (horizontalMargin * space) + "%",
+            marginBottom: "-" + verticalMargin + "%",
+            marginRight: (horizontalMargin * space) + "%",
+        };
+    }
+    return {tempWidthRatio, dynamicStyle};
 }
 
 const PolygonGroup = (props) => {
@@ -32,10 +109,20 @@ const PolygonGroup = (props) => {
         axialArray,
         axialMap,
         widthRatio,
+        groupLayoutType
     } = usePolygonGroup(props);
 
-    const horizontalMargin = (1 / ((polygonCountLength * 2) + 1)) * 100;
-    const verticalMargin = horizontalMargin / Math.sqrt(3)
+    let horizontalMargin = 0;
+    let verticalMargin = 0;
+
+    if (groupLayoutType === PolygonType.GRID) {
+        horizontalMargin = (1 / ((polygonCountLength * 2) + 1)) * 100;
+        verticalMargin = horizontalMargin / Math.sqrt(3)
+    } else if (groupLayoutType === PolygonType.CENTERED) {
+        horizontalMargin = (1 / ((polygonCountLength * 2))) * 100;
+        verticalMargin = horizontalMargin / Math.sqrt(3)
+    }
+
 
     return (
         <div style={{
@@ -46,35 +133,19 @@ const PolygonGroup = (props) => {
         }}>
             {
                 axialArray.map((row, index) => {
-
                         let dynamicStyle = {};
-                        if (axialArray.length === index + 1) {
-                            dynamicStyle = {
-                                marginRight: horizontalMargin + "%",
-                            };
-                        } else if (index % 2 === 0) {
-                            if (index === 0) {
-                                dynamicStyle = {
-                                    marginRight: horizontalMargin + "%",
-                                    marginBottom: "-" + verticalMargin + "%",
-                                };
-                            } else {
-                                dynamicStyle = {
-                                    marginRight: horizontalMargin + "%",
-                                    marginBottom: "-" + verticalMargin + "%",
-                                };
-                            }
-                        } else {
-
-                            dynamicStyle = {
-                                marginLeft: horizontalMargin + "%",
-                                marginBottom: "-" + verticalMargin + "%",
-                            };
-
+                        let tempWidthRatio = widthRatio;
+                        if (groupLayoutType === PolygonType.GRID) {
+                            dynamicStyle = generateRectangleGridMargins(axialArray, index, dynamicStyle, horizontalMargin, verticalMargin);
+                            tempWidthRatio = widthRatio;
+                        } else if (groupLayoutType === PolygonType.CENTERED) {
+                            let  __ret = generateCenteredGridMargins(polygonCountLength, row, tempWidthRatio, axialArray, index, dynamicStyle, horizontalMargin, verticalMargin);
+                            tempWidthRatio = __ret.tempWidthRatio;
+                            dynamicStyle = __ret.dynamicStyle;
                         }
                         return <div
                             style={dynamicStyle}>{
-                            row.map((element) => <RegularConvexPolygon widthRatio={widthRatio} {...axialMap[element]}
+                            row.map((element, index) => <RegularConvexPolygon widthRatio={tempWidthRatio} {...axialMap[element]}
                             />)
                         }</div>
                     }

@@ -3,13 +3,13 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import CurrencySearchSelection from "./CurrencySearchSelection";
 import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
-import {Dropdown} from "semantic-ui-react";
 import {HexagonalDisplayType} from "./PolygonUtil";
 import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
 
 const useCurrencyManager = (props) => {
-    //const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_GRID);
-    const [currencyDisplayType, setCurrencyDisplayType] = useState(HexagonalDisplayType.RADIAL_CENTERED);
+
+    let temp = HexagonalDisplayType.RADIAL_CENTERED;
+    const [currencyDisplayType, setCurrencyDisplayType] = useState(temp);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
@@ -21,9 +21,8 @@ const useCurrencyManager = (props) => {
 
     const [selectableCurrencyPool, setSelectableCurrencyPool] = useState([]);
 
-    function formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData) {
-        let i = 0;
-        for (i = targetDestinationCurrencies.length; i < 6; i++) {
+    function formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData) {
+        for (let i = targetDestinationCurrencies.length; i < 6; i++) {
             currencyVisualizationData.destinationCurrencies.push({
                 entity: "---",
                 value: 0.0
@@ -59,7 +58,7 @@ const useCurrencyManager = (props) => {
                 if (targetSourceCurrency === responseBaseCurrency) {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
-                    targetDestinationCurrencies.forEach((value, index, array) => {
+                    targetDestinationCurrencies.forEach((value) => {
                         if (value in responseRateMap) {
                             currencyVisualizationData.destinationCurrencies.push({
                                 entity: responseRateMap[value].entity,
@@ -69,7 +68,7 @@ const useCurrencyManager = (props) => {
 
                     });
 
-                    formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData);
+                    formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
 
                 } else if (targetSourceCurrency in responseRateMap) {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
@@ -81,14 +80,14 @@ const useCurrencyManager = (props) => {
                     });
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
-                    targetDestinationCurrencies.forEach((value, index, array) => {
+                    targetDestinationCurrencies.forEach((value) => {
                         currencyVisualizationData.destinationCurrencies.push({
                             entity: convertedRateMap[value].entity,
                             value: convertedRateMap[value].value
                         });
                     });
 
-                    formatEmptyCurrenySlots(targetDestinationCurrencies, currencyVisualizationData);
+                    formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
 
 
                 }
@@ -97,7 +96,7 @@ const useCurrencyManager = (props) => {
         }
 
         fetchCurrencyData();
-    }, [props, currencyDisplaySource, currencyDisplayDestinations]);
+    }, [props, currencyDisplaySource, currencyDisplayDestinations, currencyDisplayType]);
     return {
         currencyVisualizationData,
         selectableCurrencyPool,
@@ -121,7 +120,8 @@ const CurrencyManager = (props) => {
     } = useCurrencyManager(props);
     return (
         <>
-            {currencyDisplayType == HexagonalDisplayType.RADIAL_GRID &&
+
+            {currencyDisplayType === HexagonalDisplayType.RADIAL_GRID &&
             <CurrencyGridDisplay
                 currencyVisualizationData={currencyVisualizationData}
                 polygonCountLength={13}
@@ -140,10 +140,11 @@ const CurrencyManager = (props) => {
             />
             }
 
-            {currencyDisplayType == HexagonalDisplayType.RADIAL_CENTERED &&
+
+            {currencyDisplayType === HexagonalDisplayType.RADIAL_CENTERED &&
             <CurrencyCenteredDisplay
                 currencyVisualizationData={currencyVisualizationData}
-                edgeLength={5}
+                edgeLength={7}
                 defaultUnitPolygon={{
                     edgeOffsetRatio: 0.036,
                     startAngle: 90,

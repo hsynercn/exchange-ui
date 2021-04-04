@@ -52,6 +52,10 @@ export const HexagonalDisplayType = {
     RADIAL_CENTERED: "RADIAL_CENTERED",
     BASIC_CENTERED: "BASIC_CENTERED",
 }
+export const PolygonType = {
+    GRID: "GRID",
+    CENTERED: "CENTERED",
+}
 export const Directions = {
     NORTH: "NORTH",
     SOUTH: "SOUTH",

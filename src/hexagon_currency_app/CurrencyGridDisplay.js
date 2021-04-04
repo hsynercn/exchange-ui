@@ -140,6 +140,7 @@ const CurrencyGridDisplay = (props) => {
                 }}
             />
         </>
+
     );
 
 }
