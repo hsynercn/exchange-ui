@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import {getCurrencyColor} from '../CurrencyColors'
-import PolygonUtils, {Directions, getOrientations} from "../hexagon_currency_app/PolygonUtil";
+import PolygonUtils, {Directions, getRegionalOrientations} from "../hexagon_currency_app/PolygonUtil";
 import {LightenDarkenColor} from "../hexagon_currency_app/ColorUtil";
 import {getRadialExpansionSequence} from "../hexagon_currency_app/HexagonGridUtils";
 import {
@@ -228,7 +228,7 @@ class PolygonSample extends React.Component {
 
         axios.get(`http://localhost:8080/currency`).then(response => {
 
-            let startPoints = getOrientations(-1,0);
+            let startPoints = getRegionalOrientations(-1,0);
 
             let currencyMap = response.data;
 

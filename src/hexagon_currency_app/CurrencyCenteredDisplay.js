@@ -2,7 +2,13 @@ import {useEffect, useState} from "react";
 import {getRadialExpansionSequence, initHexagonPolygonCenteredGrid} from "./HexagonGridUtils";
 import PolygonGroup from "./PolygonGroup";
 import {getCurrencyColor} from "../CurrencyColors";
-import {ClockwiseHexagonDirections, Directions, getOrientations, HexagonalDisplayType} from "./PolygonUtil";
+import {
+    ClockwiseHexagonDirections,
+    ClockwiseHexagonRegions,
+    Directions, getDirectionalOrientations,
+    getRegionalOrientations,
+    HexagonalDisplayType
+} from "./PolygonUtil";
 import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
 import {LightenDarkenColor} from "./ColorUtil";
 
@@ -41,15 +47,17 @@ const useCurrencyCenteredDisplay = (props) => {
         }
         let clonedAxialMap = {...axialMap};
 
-        let startPoints = getOrientations(orientationX, orientationY);
-
-        prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap);
 
 
         if (type === HexagonalDisplayType.RADIAL_CENTERED) {
+
+            let regionalOrientations = getRegionalOrientations(orientationX, orientationY);
+
+            prepareCenterPolygon(sourceCurrencyEntity, regionalOrientations, clonedAxialMap);
+
             destinationCurrencies.forEach((currency, index) => {
-                let direction = ClockwiseHexagonDirections[index];
-                let polygonCoordinateSequence = getRadialExpansionSequence(startPoints[direction].x, startPoints[direction].y, direction);
+                let direction = ClockwiseHexagonRegions[index];
+                let polygonCoordinateSequence = getRadialExpansionSequence(regionalOrientations[direction].x, regionalOrientations[direction].y, direction);
                 let displayValue = currency.value;
                 let stepValue = getDiagonalStepValue(displayValue, floatNumFault);
 
@@ -92,6 +100,64 @@ const useCurrencyCenteredDisplay = (props) => {
                         clonedAxialMap[polygonCoordinate].innerPolygonRatio = defaultUnitPolygon.innerPolygonRatio;
                     }
                 });
+            });
+        } else if(type === HexagonalDisplayType.BASIC_CENTERED) {
+
+            let directionalOrientations = getDirectionalOrientations(orientationX, orientationY);
+
+            prepareCenterPolygon(sourceCurrencyEntity, directionalOrientations, clonedAxialMap);
+
+            destinationCurrencies.forEach((currency, index) => {
+                let direction = ClockwiseHexagonDirections[index];
+                let polygonCoordinate = directionalOrientations[direction].x + "," + directionalOrientations[direction].y;
+                let displayValue = currency.value;
+
+                let currencyText = currency.entity;
+                let fillColor = '#ffffff';
+                let strokeColor = LightenDarkenColor(getCurrencyColor(currency.entity), -20);
+                let innerFillColor = getCurrencyColor(currency.entity);
+                let textBlockColor = LightenDarkenColor(innerFillColor, 30);
+
+                clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
+
+                /*
+
+                let sum = 0;
+                polygonCoordinateSequence.forEach((polygonCoordinate, index) => {
+                    if (index === 0) {
+                        //clonedAxialMap[polygonCoordinate].textFontSize = 20;
+                        clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
+                        clonedAxialMap[polygonCoordinate].fillColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].strokeColor = textBlockColor;
+                        clonedAxialMap[polygonCoordinate].innerFillColor = textBlockColor;
+                    } else if (displayValue !== 0) {
+                        if (displayValue < stepValue) {
+                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum + displayValue);
+                            clonedAxialMap[polygonCoordinate].fillColor = fillColor;
+                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
+                            let innerPolygonRatio = displayValue / stepValue;
+                            clonedAxialMap[polygonCoordinate].innerPolygonRatio = innerPolygonRatio;
+                            displayValue = 0;
+                        } else {
+                            sum += stepValue;
+                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum);
+                            clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
+                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
+                            displayValue -= stepValue;
+                        }
+                    } else {
+                        clonedAxialMap[polygonCoordinate].text = "";
+                        clonedAxialMap[polygonCoordinate].fillColor = defaultUnitPolygon.fillColor;
+                        clonedAxialMap[polygonCoordinate].strokeColor = defaultUnitPolygon.strokeColor;
+                        clonedAxialMap[polygonCoordinate].innerFillColor = defaultUnitPolygon.innerFillColor;
+                        clonedAxialMap[polygonCoordinate].innerPolygonRatio = defaultUnitPolygon.innerPolygonRatio;
+                    }
+                });
+
+                */
+
             });
         }
         setAxialMap(clonedAxialMap);

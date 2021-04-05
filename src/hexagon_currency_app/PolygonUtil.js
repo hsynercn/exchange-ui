@@ -67,7 +67,7 @@ export const Directions = {
     EAST: "EAST",
     WEST: "WEST",
 }
-export const ClockwiseHexagonDirections = [
+export const ClockwiseHexagonRegions = [
     Directions.NORTH,
     Directions.NORTHEAST,
     Directions.SOUTHEAST,
@@ -75,7 +75,17 @@ export const ClockwiseHexagonDirections = [
     Directions.SOUTHWEST,
     Directions.NORTHWEST
 ];
-export const getOrientations = (offsetX, offsetY) => {
+
+export const ClockwiseHexagonDirections = [
+    Directions.NORTHEAST,
+    Directions.EAST,
+    Directions.SOUTHEAST,
+    Directions.SOUTHWEST,
+    Directions.WEST,
+    Directions.NORTHWEST
+];
+
+export const getRegionalOrientations = (offsetX, offsetY) => {
     let orientationOffset = {}
     orientationOffset[Directions.NORTH] = {x: offsetX + 1, y: offsetY - 2};
     orientationOffset[Directions.NORTHEAST] = {x: offsetX + 2, y: offsetY - 1};
@@ -83,6 +93,18 @@ export const getOrientations = (offsetX, offsetY) => {
     orientationOffset[Directions.SOUTH] = {x: offsetX - 1, y: offsetY + 2};
     orientationOffset[Directions.SOUTHWEST] = {x: offsetX - 2, y: offsetY + 1};
     orientationOffset[Directions.NORTHWEST] = {x: offsetX - 1, y: offsetY - 1};
+    orientationOffset[Directions.CENTER] = {x: offsetX, y: offsetY};
+    return orientationOffset;
+}
+
+export const getDirectionalOrientations = (offsetX, offsetY) => {
+    let orientationOffset = {}
+    orientationOffset[Directions.NORTHEAST] = {x: offsetX + 1, y: offsetY - 1};
+    orientationOffset[Directions.EAST] = {x: offsetX + 1, y: offsetY - 0};
+    orientationOffset[Directions.SOUTHEAST] = {x: offsetX + 0, y: offsetY + 1};
+    orientationOffset[Directions.SOUTHWEST] = {x: offsetX - 1, y: offsetY + 1};
+    orientationOffset[Directions.WEST] = {x: offsetX - 1, y: offsetY + 0};
+    orientationOffset[Directions.NORTHWEST] = {x: offsetX - 0, y: offsetY - 1};
     orientationOffset[Directions.CENTER] = {x: offsetX, y: offsetY};
     return orientationOffset;
 }

@@ -8,7 +8,7 @@ import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
 
 const useCurrencyManager = (props) => {
 
-    let temp = HexagonalDisplayType.RADIAL_CENTERED;
+    let temp = HexagonalDisplayType.BASIC_CENTERED;
     const [currencyDisplayType, setCurrencyDisplayType] = useState(temp);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
@@ -118,6 +118,19 @@ const CurrencyManager = (props) => {
         setCurrencyDisplayDestinations,
         currencyDisplayType
     } = useCurrencyManager(props);
+
+    let defaultUnitPolygon = {
+        edgeOffsetRatio: 0.036,
+        startAngle: 90,
+        numSides: 6,
+        fillColor: '#ffffff',
+        strokeColor: '#777777',
+        text: "",
+        textFontSize: 14,
+        innerPolygonRatio: 0.0,
+        innerFillColor: "",
+    };
+
     return (
         <>
 
@@ -126,36 +139,23 @@ const CurrencyManager = (props) => {
                 currencyVisualizationData={currencyVisualizationData}
                 polygonCountLength={13}
                 polygonCountHeight={13}
-                defaultUnitPolygon={{
-                    edgeOffsetRatio: 0.036,
-                    startAngle: 90,
-                    numSides: 6,
-                    fillColor: '#ffffff',
-                    strokeColor: '#777777',
-                    text: "",
-                    textFontSize: 14,
-                    innerPolygonRatio: 0.0,
-                    innerFillColor: "",
-                }}
+                defaultUnitPolygon={defaultUnitPolygon}
             />
             }
-
 
             {currencyDisplayType === HexagonalDisplayType.RADIAL_CENTERED &&
             <CurrencyCenteredDisplay
                 currencyVisualizationData={currencyVisualizationData}
                 edgeLength={7}
-                defaultUnitPolygon={{
-                    edgeOffsetRatio: 0.036,
-                    startAngle: 90,
-                    numSides: 6,
-                    fillColor: '#ffffff',
-                    strokeColor: '#777777',
-                    text: "",
-                    textFontSize: 14,
-                    innerPolygonRatio: 0.0,
-                    innerFillColor: "",
-                }}
+                defaultUnitPolygon={defaultUnitPolygon}
+            />
+            }
+
+            {currencyDisplayType === HexagonalDisplayType.BASIC_CENTERED &&
+            <CurrencyCenteredDisplay
+                currencyVisualizationData={currencyVisualizationData}
+                edgeLength={2}
+                defaultUnitPolygon={defaultUnitPolygon}
             />
             }
 
