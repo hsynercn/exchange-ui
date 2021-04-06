@@ -8,7 +8,7 @@ import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
 
 const useCurrencyManager = (props) => {
 
-    let temp = HexagonalDisplayType.BASIC_CENTERED;
+    let temp = HexagonalDisplayType.RADIAL_CENTERED;
     const [currencyDisplayType, setCurrencyDisplayType] = useState(temp);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
@@ -38,7 +38,7 @@ const useCurrencyManager = (props) => {
                 let responseRateMap = {};
                 let responseCurrencyPool = [];
                 response.data.rates.forEach(rate => {
-                    responseRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt)};
+                    responseRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt), dailyChange: parseFloat(rate.dChg), dailyChangeRate: parseFloat(rate.dChgR)};
                     responseCurrencyPool.push({key: rate.den, text: rate.den, value: rate.den});
                 });
 
@@ -62,7 +62,9 @@ const useCurrencyManager = (props) => {
                         if (value in responseRateMap) {
                             currencyVisualizationData.destinationCurrencies.push({
                                 entity: responseRateMap[value].entity,
-                                value: responseRateMap[value].value
+                                value: responseRateMap[value].value,
+                                dailyChange: responseRateMap[value].dailyChange,
+                                dailyChangeRate: responseRateMap[value].dailyChangeRate,
                             });
                         }
 
@@ -76,14 +78,16 @@ const useCurrencyManager = (props) => {
                     let convertedRateMap = {};
                     let divider = responseRateMap[targetSourceCurrency].value;
                     response.data.rates.forEach(rate => {
-                        convertedRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt) / divider};
+                        convertedRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt) / divider, dailyChange: parseFloat(0), dailyChangeRate: parseFloat(0)};
                     });
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
                     targetDestinationCurrencies.forEach((value) => {
                         currencyVisualizationData.destinationCurrencies.push({
                             entity: convertedRateMap[value].entity,
-                            value: convertedRateMap[value].value
+                            value: convertedRateMap[value].value,
+                            dailyChange: convertedRateMap[value].dailyChange,
+                            dailyChangeRate: convertedRateMap[value].dailyChangeRate,
                         });
                     });
 

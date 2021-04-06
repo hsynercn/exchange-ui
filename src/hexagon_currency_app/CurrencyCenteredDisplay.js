@@ -118,7 +118,14 @@ const useCurrencyCenteredDisplay = (props) => {
                 let innerFillColor = getCurrencyColor(currency.entity);
                 let textBlockColor = LightenDarkenColor(innerFillColor, 30);
 
-                clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
+                clonedAxialMap[polygonCoordinate].text =
+                    currencyText + "/" + sourceCurrencyEntity + "\n"
+                    + largeNumberFormatter(displayValue) + "\n"
+                    + currency.dailyChange.toFixed(4);
+                //clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
+                clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
+                clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+                clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
 
                 /*
 
