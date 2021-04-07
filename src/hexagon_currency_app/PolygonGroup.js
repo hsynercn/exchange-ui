@@ -126,7 +126,7 @@ const PolygonGroup = (props) => {
 
     return (
         <div style={{
-            width: "80%",
+            width: "90%",
             overflowX: "auto",
             overflowY: "auto",
             margin: "0 auto"

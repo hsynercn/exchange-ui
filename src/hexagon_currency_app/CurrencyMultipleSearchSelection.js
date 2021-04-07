@@ -15,7 +15,7 @@ const CurrencyMultipleSearchSelection = (props) => {
 
     return (
         <div style={{
-            width: "80%",
+            width: "90%",
             margin: "1% auto"
         }}>
             <Dropdown style={{backgroundColor:"powderblue"}}

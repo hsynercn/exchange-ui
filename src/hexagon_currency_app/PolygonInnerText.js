@@ -13,8 +13,8 @@ const PolygonInnerText = (props) => {
                     if (array.length === 2) {
                         fontSize = "medium";
                         tempLineMargin = 26;
-                    } else if (array.length === 3) {
-                        let lineSizes = ["xx-small", "medium", "xx-small"];
+                    } else if (array.length >= 3) {
+                        let lineSizes = ["xx-small", "medium", "47%"];
                         fontSize = lineSizes[index];
                         tempLineMargin = 20;
                     }

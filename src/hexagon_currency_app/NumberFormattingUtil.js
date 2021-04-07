@@ -1,4 +1,4 @@
-export const largeNumberFormatter = (valueIn) => {
+function compressLargeNumber(valueIn) {
     let value = valueIn;
     let expression = ["", "K", "M", "G", "T", "P", "E"];
 
@@ -9,8 +9,20 @@ export const largeNumberFormatter = (valueIn) => {
         value = value / 1000;
         valueScale++;
     }
+    return {value, expression, valueScale};
+}
+
+export const largeNumberFormatter = (valueIn) => {
+    let {value, expression, valueScale} = compressLargeNumber(valueIn);
     let decimalDigit = value % 1 === 0 ? 1 : 2;
     decimalDigit =  (value / 100) > 1 ? 1 : decimalDigit;
+    return value.toFixed(decimalDigit) + expression[valueScale];
+}
+
+export const detailedNumberFormatter = (valueIn) => {
+    let {value, expression, valueScale} = compressLargeNumber(valueIn);
+    let decimalDigit = value % 1 === 0 ? 1 : 4;
+    decimalDigit =  (value / 100) > 1 ? 2 : decimalDigit;
     return value.toFixed(decimalDigit) + expression[valueScale];
 }
 

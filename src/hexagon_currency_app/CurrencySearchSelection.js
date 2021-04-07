@@ -10,7 +10,7 @@ const CurrencySearchSelection = (props) => {
 
     return (
         <div style={{
-            width: "80%",
+            width: "90%",
             margin: "1% auto"
         }}><Dropdown style={{backgroundColor:"powderblue"}}
             placeholder='Select Base Currency'

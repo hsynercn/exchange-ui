@@ -9,8 +9,20 @@ import {
     getRegionalOrientations,
     HexagonalDisplayType
 } from "./PolygonUtil";
-import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
+import {detailedNumberFormatter, getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
 import {LightenDarkenColor} from "./ColorUtil";
+
+function formatDailyChangeString(currency) {
+    let changeDataString = "";
+    if (currency.dailyChange > 0) {
+        changeDataString = "+" + detailedNumberFormatter(currency.dailyChange) +
+            "(+" + largeNumberFormatter(currency.dailyChangeRate * 100) + "%)";
+    } else {
+        changeDataString = detailedNumberFormatter(currency.dailyChange) +
+            "(" + largeNumberFormatter(currency.dailyChangeRate * 100) + "%)";
+    }
+    return changeDataString;
+}
 
 const useCurrencyCenteredDisplay = (props) => {
     const [edgeLength, setEdgeLength] = useState(props.edgeLength);
@@ -46,7 +58,6 @@ const useCurrencyCenteredDisplay = (props) => {
             return;
         }
         let clonedAxialMap = {...axialMap};
-
 
 
         if (type === HexagonalDisplayType.RADIAL_CENTERED) {
@@ -101,7 +112,7 @@ const useCurrencyCenteredDisplay = (props) => {
                     }
                 });
             });
-        } else if(type === HexagonalDisplayType.BASIC_CENTERED) {
+        } else if (type === HexagonalDisplayType.BASIC_CENTERED) {
 
             let directionalOrientations = getDirectionalOrientations(orientationX, orientationY);
 
@@ -118,52 +129,18 @@ const useCurrencyCenteredDisplay = (props) => {
                 let innerFillColor = getCurrencyColor(currency.entity);
                 let textBlockColor = LightenDarkenColor(innerFillColor, 30);
 
+                let currencyValueString = detailedNumberFormatter(displayValue);
+                let changeDataString = formatDailyChangeString(currency);
+
                 clonedAxialMap[polygonCoordinate].text =
                     currencyText + "/" + sourceCurrencyEntity + "\n"
-                    + largeNumberFormatter(displayValue) + "\n"
-                    + currency.dailyChange.toFixed(4);
+                    + currencyValueString + "\n"
+                    + changeDataString;
                 //clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
-                clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
+                //clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
                 clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
-                clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
+                //clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
 
-                /*
-
-                let sum = 0;
-                polygonCoordinateSequence.forEach((polygonCoordinate, index) => {
-                    if (index === 0) {
-                        //clonedAxialMap[polygonCoordinate].textFontSize = 20;
-                        clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
-                        clonedAxialMap[polygonCoordinate].fillColor = textBlockColor;
-                        clonedAxialMap[polygonCoordinate].strokeColor = textBlockColor;
-                        clonedAxialMap[polygonCoordinate].innerFillColor = textBlockColor;
-                    } else if (displayValue !== 0) {
-                        if (displayValue < stepValue) {
-                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum + displayValue);
-                            clonedAxialMap[polygonCoordinate].fillColor = fillColor;
-                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
-                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
-                            let innerPolygonRatio = displayValue / stepValue;
-                            clonedAxialMap[polygonCoordinate].innerPolygonRatio = innerPolygonRatio;
-                            displayValue = 0;
-                        } else {
-                            sum += stepValue;
-                            clonedAxialMap[polygonCoordinate].text = largeNumberFormatter(sum);
-                            clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
-                            clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
-                            clonedAxialMap[polygonCoordinate].innerFillColor = innerFillColor;
-                            displayValue -= stepValue;
-                        }
-                    } else {
-                        clonedAxialMap[polygonCoordinate].text = "";
-                        clonedAxialMap[polygonCoordinate].fillColor = defaultUnitPolygon.fillColor;
-                        clonedAxialMap[polygonCoordinate].strokeColor = defaultUnitPolygon.strokeColor;
-                        clonedAxialMap[polygonCoordinate].innerFillColor = defaultUnitPolygon.innerFillColor;
-                        clonedAxialMap[polygonCoordinate].innerPolygonRatio = defaultUnitPolygon.innerPolygonRatio;
-                    }
-                });
-
-                */
 
             });
         }

@@ -8,7 +8,7 @@ import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
 
 const useCurrencyManager = (props) => {
 
-    let temp = HexagonalDisplayType.RADIAL_CENTERED;
+    let temp = HexagonalDisplayType.BASIC_CENTERED;
     const [currencyDisplayType, setCurrencyDisplayType] = useState(temp);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
