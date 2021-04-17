@@ -116,7 +116,15 @@ const useCurrencyCenteredDisplay = (props) => {
 
             let directionalOrientations = getDirectionalOrientations(orientationX, orientationY);
 
-            prepareCenterPolygon(sourceCurrencyEntity, directionalOrientations, clonedAxialMap);
+            let mainColor = "#cacaca";
+
+            let centralTextBlockColor = getCurrencyColor(sourceCurrencyEntity);
+            let centerPolygonCoordinate = directionalOrientations[Directions.CENTER].x + "," + directionalOrientations[Directions.CENTER].y;
+            clonedAxialMap[centerPolygonCoordinate].fillColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].strokeColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].innerFillColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].text = sourceCurrencyEntity;
+
 
             destinationCurrencies.forEach((currency, index) => {
                 let direction = ClockwiseHexagonDirections[index];
@@ -124,18 +132,25 @@ const useCurrencyCenteredDisplay = (props) => {
                 let displayValue = currency.value;
 
                 let currencyText = currency.entity;
-                let fillColor = '#ffffff';
-                let strokeColor = LightenDarkenColor(getCurrencyColor(currency.entity), -20);
-                let innerFillColor = getCurrencyColor(currency.entity);
+                let fillColor = mainColor;
+                //let strokeColor = LightenDarkenColor(getCurrencyColor(currency.entity), -20);
+                let strokeColor = mainColor;
+                //let innerFillColor = getCurrencyColor(currency.entity);
+                let innerFillColor = strokeColor;
                 let textBlockColor = LightenDarkenColor(innerFillColor, 30);
 
-                let currencyValueString = detailedNumberFormatter(displayValue);
-                let changeDataString = formatDailyChangeString(currency);
+                if(displayValue !== 0) {
+                    let currencyValueString = detailedNumberFormatter(displayValue);
+                    let changeDataString = formatDailyChangeString(currency);
+                    clonedAxialMap[polygonCoordinate].text =
+                        currencyText + "/" + sourceCurrencyEntity + "\n"
+                        + currencyValueString + "\n"
+                        + changeDataString;
+                } else {
+                    clonedAxialMap[polygonCoordinate].text =
+                        "\n  " + currencyText + "/" + sourceCurrencyEntity + "  \n";
+                }
 
-                clonedAxialMap[polygonCoordinate].text =
-                    currencyText + "/" + sourceCurrencyEntity + "\n"
-                    + currencyValueString + "\n"
-                    + changeDataString;
                 //clonedAxialMap[polygonCoordinate].text = currencyText + "\n" + "/" + sourceCurrencyEntity;
                 //clonedAxialMap[polygonCoordinate].fillColor = innerFillColor;
                 clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;

@@ -5,6 +5,7 @@ import CurrencySearchSelection from "./CurrencySearchSelection";
 import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
 import {HexagonalDisplayType} from "./PolygonUtil";
 import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
+import {Dropdown} from "semantic-ui-react";
 
 const useCurrencyManager = (props) => {
 
@@ -38,7 +39,12 @@ const useCurrencyManager = (props) => {
                 let responseRateMap = {};
                 let responseCurrencyPool = [];
                 response.data.rates.forEach(rate => {
-                    responseRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt), dailyChange: parseFloat(rate.dChg), dailyChangeRate: parseFloat(rate.dChgR)};
+                    responseRateMap[rate.den] = {
+                        entity: rate.den,
+                        value: parseFloat(rate.rt),
+                        dailyChange: parseFloat(rate.dChg),
+                        dailyChangeRate: parseFloat(rate.dChgR)
+                    };
                     responseCurrencyPool.push({key: rate.den, text: rate.den, value: rate.den});
                 });
 
@@ -76,9 +82,18 @@ const useCurrencyManager = (props) => {
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
                     let convertedRateMap = {};
-                    let divider = responseRateMap[targetSourceCurrency].value;
+                    let currencyConverter = responseRateMap[targetSourceCurrency].value;
+                    let currencyConverterPrevious = responseRateMap[targetSourceCurrency].value - responseRateMap[targetSourceCurrency].dailyChange;
                     response.data.rates.forEach(rate => {
-                        convertedRateMap[rate.den] = {entity: rate.den, value: parseFloat(rate.rt) / divider, dailyChange: parseFloat(0), dailyChangeRate: parseFloat(0)};
+                        let value = parseFloat(rate.rt) / currencyConverter;
+                        let previousValue = parseFloat(rate.rt) - parseFloat(rate.dChg);
+                        let previousRate = 1 / (currencyConverterPrevious / previousValue);
+                        convertedRateMap[rate.den] = {
+                            entity: rate.den,
+                            value: value,
+                            dailyChange: value - previousRate,
+                            dailyChangeRate: (value - previousRate) / value
+                        };
                     });
                     currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
 
@@ -163,12 +178,27 @@ const CurrencyManager = (props) => {
             />
             }
 
+
+
             <CurrencySearchSelection setValue={setCurrencyDisplaySource}
                                      options={selectableCurrencyPool}
                                      value={currencyDisplaySource}/>
             <CurrencyMultipleSearchSelection setValue={setCurrencyDisplayDestinations}
                                              options={selectableCurrencyPool}
                                              value={currencyDisplayDestinations}/>
+
+            <div style={{
+                width: "90%",
+                margin: "1% auto"
+            }}>
+                <p>
+                    Currency information source of this site is the European Central Bank, and it
+                    may be obtained free of charge through this <a
+                    href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
+                    target="_blank">website</a>.
+                </p>
+            </div>
+
         </>
     )
 }
