@@ -1,6 +1,6 @@
 import React from "react";
 import axios from 'axios';
-import {getCurrencyColor} from '../CurrencyColors'
+import {getCurrencyColor} from '../hexagon_currency_app/Currency/CurrencyColors'
 import PolygonUtils, {Directions, getRegionalOrientations} from "../hexagon_currency_app/Util/PolygonUtil";
 import {LightenDarkenColor} from "../hexagon_currency_app/Util/ColorUtil";
 import {getRadialExpansionSequence} from "../hexagon_currency_app/Util/HexagonGridUtils";

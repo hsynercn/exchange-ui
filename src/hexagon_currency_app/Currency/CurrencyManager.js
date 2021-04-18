@@ -14,7 +14,7 @@ const useCurrencyManager = (props) => {
     const selectableCurrencyDisplayTypes = [
         { key: HexagonalDisplayType.BASIC_CENTERED, text: 'Basic', value: HexagonalDisplayType.BASIC_CENTERED },
         { key: HexagonalDisplayType.RADIAL_CENTERED, text: 'Hexagonal', value: HexagonalDisplayType.RADIAL_CENTERED },
-        { key: HexagonalDisplayType.RADIAL_GRID, text: 'Full', value: HexagonalDisplayType.RADIAL_GRID },
+        { key: HexagonalDisplayType.RADIAL_GRID, text: 'Wide', value: HexagonalDisplayType.RADIAL_GRID },
     ]
     let temp = selectableCurrencyDisplayTypes[1];
     if(isMobile()) {

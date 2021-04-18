@@ -1,7 +1,7 @@
 import PolygonGroup from "../Polygon/PolygonGroup";
 import React, {useEffect, useState} from "react";
 import {ClockwiseHexagonRegions, Directions, getRegionalOrientations, HexagonalDisplayType} from "../Util/PolygonUtil";
-import {getCurrencyColor} from "../../CurrencyColors";
+import {getCurrencyColor} from "./CurrencyColors";
 import {initHexagonPolygonRectangleGrid, getRadialExpansionSequence} from "../Util/HexagonGridUtils";
 import {getDiagonalStepValue, largeNumberFormatter} from "../Util/NumberFormattingUtil";
 import {LightenDarkenColor} from "../Util/ColorUtil";
