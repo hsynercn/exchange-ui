@@ -3,19 +3,28 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import CurrencySearchSelection from "./CurrencySearchSelection";
 import CurrencyMultipleSearchSelection from "./CurrencyMultipleSearchSelection";
-import {HexagonalDisplayType} from "./PolygonUtil";
+import {HexagonalDisplayType} from "../Util/PolygonUtil";
 import CurrencyCenteredDisplay from "./CurrencyCenteredDisplay";
-import {Dropdown} from "semantic-ui-react";
+import ECBDataSourceInformer from "./ECBDataSourceInformer";
+import HexagonalDisplayTypeMenu from "../Polygon/HexagonalDisplayTypeMenu";
+import {isMobile} from "../Util/DeviceUtil";
 
 const useCurrencyManager = (props) => {
 
-    let temp = HexagonalDisplayType.BASIC_CENTERED;
-    const [currencyDisplayType, setCurrencyDisplayType] = useState(temp);
+    const selectableCurrencyDisplayTypes = [
+        { key: HexagonalDisplayType.BASIC_CENTERED, text: 'Basic', value: HexagonalDisplayType.BASIC_CENTERED },
+        { key: HexagonalDisplayType.RADIAL_CENTERED, text: 'Hexagonal', value: HexagonalDisplayType.RADIAL_CENTERED },
+        { key: HexagonalDisplayType.RADIAL_GRID, text: 'Full', value: HexagonalDisplayType.RADIAL_GRID },
+    ]
+    let temp = selectableCurrencyDisplayTypes[1];
+    if(isMobile()) {
+        temp = selectableCurrencyDisplayTypes[0];
+    }
+    const [currencyDisplayType, setCurrencyDisplayType] = useState(temp.key);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
     const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
     const [currencyVisualizationData, setCurrencyVisualizationData] = useState({
-        type: currencyDisplayType,
         sourceCurrency: {entity: currencyDisplaySource},
         destinationCurrencies: []
     });
@@ -123,7 +132,9 @@ const useCurrencyManager = (props) => {
         setCurrencyDisplaySource,
         currencyDisplayDestinations,
         setCurrencyDisplayDestinations,
-        currencyDisplayType
+        currencyDisplayType,
+        setCurrencyDisplayType,
+        selectableCurrencyDisplayTypes
     };
 }
 
@@ -135,7 +146,9 @@ const CurrencyManager = (props) => {
         setCurrencyDisplaySource,
         currencyDisplayDestinations,
         setCurrencyDisplayDestinations,
-        currencyDisplayType
+        currencyDisplayType,
+        setCurrencyDisplayType,
+        selectableCurrencyDisplayTypes
     } = useCurrencyManager(props);
 
     let defaultUnitPolygon = {
@@ -153,8 +166,12 @@ const CurrencyManager = (props) => {
     return (
         <>
 
+            <HexagonalDisplayTypeMenu setValue={setCurrencyDisplayType}
+                                                  options={selectableCurrencyDisplayTypes}
+                                                  value={currencyDisplayType}/>
             {currencyDisplayType === HexagonalDisplayType.RADIAL_GRID &&
             <CurrencyGridDisplay
+                type={currencyDisplayType}
                 currencyVisualizationData={currencyVisualizationData}
                 polygonCountLength={13}
                 polygonCountHeight={13}
@@ -164,6 +181,7 @@ const CurrencyManager = (props) => {
 
             {currencyDisplayType === HexagonalDisplayType.RADIAL_CENTERED &&
             <CurrencyCenteredDisplay
+                type={currencyDisplayType}
                 currencyVisualizationData={currencyVisualizationData}
                 edgeLength={7}
                 defaultUnitPolygon={defaultUnitPolygon}
@@ -172,13 +190,12 @@ const CurrencyManager = (props) => {
 
             {currencyDisplayType === HexagonalDisplayType.BASIC_CENTERED &&
             <CurrencyCenteredDisplay
+                type={currencyDisplayType}
                 currencyVisualizationData={currencyVisualizationData}
                 edgeLength={2}
                 defaultUnitPolygon={defaultUnitPolygon}
             />
             }
-
-
 
             <CurrencySearchSelection setValue={setCurrencyDisplaySource}
                                      options={selectableCurrencyPool}
@@ -186,18 +203,7 @@ const CurrencyManager = (props) => {
             <CurrencyMultipleSearchSelection setValue={setCurrencyDisplayDestinations}
                                              options={selectableCurrencyPool}
                                              value={currencyDisplayDestinations}/>
-
-            <div style={{
-                width: "90%",
-                margin: "1% auto"
-            }}>
-                <p>
-                    Currency information source of this site is the European Central Bank, and it
-                    may be obtained free of charge through this <a
-                    href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
-                    target="_blank">website</a>.
-                </p>
-            </div>
+            <ECBDataSourceInformer/>
 
         </>
     )

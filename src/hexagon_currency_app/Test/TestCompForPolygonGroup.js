@@ -1,4 +1,4 @@
-import PolygonGroup from "./PolygonGroup";
+import PolygonGroup from "../Polygon/PolygonGroup";
 import React from "react";
 
 const TestComptForPolygonGroup = (props) => {

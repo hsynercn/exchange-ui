@@ -1,4 +1,4 @@
-import RegularConvexPolygon from "./RegularConvexPolygon";
+import RegularConvexPolygon from "../Polygon/RegularConvexPolygon";
 import React from "react";
 
 const TestComptForRegularConvexPolygon = (props) => {

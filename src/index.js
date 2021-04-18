@@ -4,9 +4,9 @@ import './index.css';
 import './obsolete/demo.css'
 import reportWebVitals from './reportWebVitals';
 import 'semantic-ui-css/semantic.min.css';
-import CurrencyMultipleSearchSelection from "./hexagon_currency_app/CurrencyMultipleSearchSelection";
-import CurrencySearchSelection from "./hexagon_currency_app/CurrencySearchSelection";
-import CurrencyManager from "./hexagon_currency_app/CurrencyManager";
+import CurrencyMultipleSearchSelection from "./hexagon_currency_app/Currency/CurrencyMultipleSearchSelection";
+import CurrencySearchSelection from "./hexagon_currency_app/Currency/CurrencySearchSelection";
+import CurrencyManager from "./hexagon_currency_app/Currency/CurrencyManager";
 
 ReactDOM.render(
     <React.StrictMode>

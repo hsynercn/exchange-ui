@@ -1,6 +1,6 @@
 import RegularConvexPolygon from "./RegularConvexPolygon";
 import React, {useState} from "react";
-import {PolygonType} from "./PolygonUtil";
+import {PolygonType} from "../Util/PolygonUtil";
 
 function getPolygonGroupType(axialArray) {
     let arrayLength = axialArray.length;

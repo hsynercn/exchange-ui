@@ -1,21 +1,37 @@
-import PolygonGroup from "./PolygonGroup";
-import React, {useEffect, useState} from "react";
-import {ClockwiseHexagonRegions, Directions, getRegionalOrientations, HexagonalDisplayType} from "./PolygonUtil";
-import {getCurrencyColor} from "../CurrencyColors";
-import {initHexagonPolygonRectangleGrid, getRadialExpansionSequence} from "./HexagonGridUtils";
-import {getDiagonalStepValue, largeNumberFormatter} from "./NumberFormattingUtil";
-import {LightenDarkenColor} from "./ColorUtil";
+import {useEffect, useState} from "react";
+import {getRadialExpansionSequence, initHexagonPolygonCenteredGrid} from "../Util/HexagonGridUtils";
+import PolygonGroup from "../Polygon/PolygonGroup";
+import {getCurrencyColor} from "../../CurrencyColors";
+import {
+    ClockwiseHexagonDirections,
+    ClockwiseHexagonRegions,
+    Directions, getDirectionalOrientations,
+    getRegionalOrientations,
+    HexagonalDisplayType
+} from "../Util/PolygonUtil";
+import {detailedNumberFormatter, getDiagonalStepValue, largeNumberFormatter} from "../Util/NumberFormattingUtil";
+import {LightenDarkenColor} from "../Util/ColorUtil";
 
-const useCurrencyGridDisplay = (props) => {
-    const [polygonCountLength, setPolygonCountLength] = useState(props.polygonCountLength);
-    const [polygonCountHeight, setPolygonCountHeight] = useState(props.polygonCountHeight);
+function formatDailyChangeString(currency) {
+    let changeDataString = "";
+    if (currency.dailyChange > 0) {
+        changeDataString = "+" + detailedNumberFormatter(currency.dailyChange) +
+            "(+" + largeNumberFormatter(currency.dailyChangeRate * 100) + "%)";
+    } else {
+        changeDataString = detailedNumberFormatter(currency.dailyChange) +
+            "(" + largeNumberFormatter(currency.dailyChangeRate * 100) + "%)";
+    }
+    return changeDataString;
+}
+
+const useCurrencyCenteredDisplay = (props) => {
+    const [edgeLength, setEdgeLength] = useState(props.edgeLength);
     const [defaultUnitPolygon, setDefaultUnitPolygon] = useState(props.defaultUnitPolygon);
 
-    let {tempAxialArray, tempAxialMap} = initHexagonPolygonRectangleGrid(polygonCountLength, polygonCountHeight, defaultUnitPolygon);
+    let {tempAxialArray, tempAxialMap} = initHexagonPolygonCenteredGrid(edgeLength, defaultUnitPolygon);
 
     const [axialArray, setAxialArray] = useState(tempAxialArray);
     const [axialMap, setAxialMap] = useState(tempAxialMap);
-
     const [customizedPolygons, setCustomizedPolygons] = useState([]);
     const [orientationX, setOrientationX] = useState(0);
     const [orientationY, setOrientationY] = useState(0);
@@ -34,7 +50,7 @@ const useCurrencyGridDisplay = (props) => {
 
         let currencyVisualizationData = props.currencyVisualizationData;
 
-        let type = currencyVisualizationData.type;
+        let type = props.type;
         let sourceCurrencyEntity = currencyVisualizationData.sourceCurrency.entity;
         let destinationCurrencies = currencyVisualizationData.destinationCurrencies;
 
@@ -43,15 +59,22 @@ const useCurrencyGridDisplay = (props) => {
         }
         let clonedAxialMap = {...axialMap};
 
-        let startPoints = getRegionalOrientations(orientationX, orientationY);
+        Object.keys(clonedAxialMap).forEach(function(key) {
+            clonedAxialMap[key].text = defaultUnitPolygon.text;
+            clonedAxialMap[key].fillColor = defaultUnitPolygon.fillColor;
+            clonedAxialMap[key].strokeColor = defaultUnitPolygon.strokeColor;
+            clonedAxialMap[key].innerFillColor = defaultUnitPolygon.innerFillColor;
+        });
 
-        prepareCenterPolygon(sourceCurrencyEntity, startPoints, clonedAxialMap);
+        if (type === HexagonalDisplayType.RADIAL_CENTERED) {
 
+            let regionalOrientations = getRegionalOrientations(orientationX, orientationY);
 
-        if (type === HexagonalDisplayType.RADIAL_GRID) {
+            prepareCenterPolygon(sourceCurrencyEntity, regionalOrientations, clonedAxialMap);
+
             destinationCurrencies.forEach((currency, index) => {
                 let direction = ClockwiseHexagonRegions[index];
-                let polygonCoordinateSequence = getRadialExpansionSequence(startPoints[direction].x, startPoints[direction].y, direction);
+                let polygonCoordinateSequence = getRadialExpansionSequence(regionalOrientations[direction].x, regionalOrientations[direction].y, direction);
                 let displayValue = currency.value;
                 let stepValue = getDiagonalStepValue(displayValue, floatNumFault);
 
@@ -95,35 +118,70 @@ const useCurrencyGridDisplay = (props) => {
                     }
                 });
             });
+        } else if (type === HexagonalDisplayType.BASIC_CENTERED) {
+
+            let directionalOrientations = getDirectionalOrientations(orientationX, orientationY);
+
+            let mainColor = "#cacaca";
+
+            let centralTextBlockColor = getCurrencyColor(sourceCurrencyEntity);
+            let centerPolygonCoordinate = directionalOrientations[Directions.CENTER].x + "," + directionalOrientations[Directions.CENTER].y;
+            clonedAxialMap[centerPolygonCoordinate].fillColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].strokeColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].innerFillColor = mainColor;
+            clonedAxialMap[centerPolygonCoordinate].text = sourceCurrencyEntity;
+
+
+            destinationCurrencies.forEach((currency, index) => {
+                let direction = ClockwiseHexagonDirections[index];
+                let polygonCoordinate = directionalOrientations[direction].x + "," + directionalOrientations[direction].y;
+                let displayValue = currency.value;
+
+                let currencyText = currency.entity;
+                let fillColor = mainColor;
+                let strokeColor = mainColor;
+                let innerFillColor = strokeColor;
+                let textBlockColor = LightenDarkenColor(innerFillColor, 30);
+
+                if(displayValue !== 0) {
+                    let currencyValueString = detailedNumberFormatter(displayValue);
+                    let changeDataString = formatDailyChangeString(currency);
+                    clonedAxialMap[polygonCoordinate].text =
+                        currencyText + "/" + sourceCurrencyEntity + "\n"
+                        + currencyValueString + "\n"
+                        + changeDataString;
+                } else {
+                    clonedAxialMap[polygonCoordinate].text =
+                        "\n  " + currencyText + "/" + sourceCurrencyEntity + "  \n";
+                }
+                clonedAxialMap[polygonCoordinate].strokeColor = strokeColor;
+            });
         }
         setAxialMap(clonedAxialMap);
 
     }, [props]);
+
     return {
-        polygonCountLength,
-        polygonCountHeight,
-        defaultUnitPolygon,
+        edgeLength,
         customizedPolygons,
         axialArray,
-        axialMap};
+        axialMap
+    };
 }
 
-const CurrencyGridDisplay = (props) => {
+const CurrencyCenteredDisplay = (props) => {
     const {
-        polygonCountLength,
-        polygonCountHeight,
-        defaultUnitPolygon,
+        edgeLength,
         customizedPolygons,
         axialArray,
-        axialMap,
-    } = useCurrencyGridDisplay(props);
-
+        axialMap
+    } = useCurrencyCenteredDisplay(props);
 
     return (
         <>
             <PolygonGroup
-                polygonCountLength={polygonCountLength}
-                polygonCountHeight={polygonCountHeight}
+                polygonCountLength={2 * edgeLength - 1}
+                polygonCountHeight={2 * edgeLength - 1}
                 customizedPolygons={customizedPolygons}
                 axialArray={axialArray}
                 axialMap={axialMap}
@@ -140,8 +198,6 @@ const CurrencyGridDisplay = (props) => {
                 }}
             />
         </>
-
     );
-
 }
-export default CurrencyGridDisplay;
+export default CurrencyCenteredDisplay;

@@ -1,14 +1,14 @@
 import React from "react";
 import axios from 'axios';
 import {getCurrencyColor} from '../CurrencyColors'
-import PolygonUtils, {Directions, getRegionalOrientations} from "../hexagon_currency_app/PolygonUtil";
-import {LightenDarkenColor} from "../hexagon_currency_app/ColorUtil";
-import {getRadialExpansionSequence} from "../hexagon_currency_app/HexagonGridUtils";
+import PolygonUtils, {Directions, getRegionalOrientations} from "../hexagon_currency_app/Util/PolygonUtil";
+import {LightenDarkenColor} from "../hexagon_currency_app/Util/ColorUtil";
+import {getRadialExpansionSequence} from "../hexagon_currency_app/Util/HexagonGridUtils";
 import {
     getDecimalDigitCount,
     getPowerOfTen,
     largeNumberFormatter
-} from "../hexagon_currency_app/NumberFormattingUtil";
+} from "../hexagon_currency_app/Util/NumberFormattingUtil";
 
 class RegularConvexPolygon extends React.Component {
     constructor(props) {

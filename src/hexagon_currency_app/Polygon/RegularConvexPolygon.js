@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import PolygonUtils from "./PolygonUtil";
+import PolygonUtils from "../Util/PolygonUtil";
 import PolygonInnerText from "./PolygonInnerText";
 
 const useRegularConvexPolygon = (props) => {

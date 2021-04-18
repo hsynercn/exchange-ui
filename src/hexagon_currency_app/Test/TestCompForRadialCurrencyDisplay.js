@@ -1,5 +1,5 @@
 import React from "react";
-import CurrencyGridDisplay from "./CurrencyGridDisplay";
+import CurrencyGridDisplay from "../Currency/CurrencyGridDisplay";
 
 const TestComptForRadialCurrencyDisplay = (props) => {
     return (
