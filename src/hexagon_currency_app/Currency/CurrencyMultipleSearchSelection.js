@@ -18,7 +18,7 @@ const CurrencyMultipleSearchSelection = (props) => {
             width: "90%",
             margin: "1% auto"
         }}>
-            <Dropdown style={{backgroundColor:"powderblue"}}
+            <Dropdown style={{backgroundColor:"#cdebff"}}
                 placeholder="Select Target Currencies"
                 onChange={handleChange}
                 value={selectedCurrencies}

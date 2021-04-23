@@ -31,6 +31,8 @@ const useCurrencyManager = (props) => {
 
     const [selectableCurrencyPool, setSelectableCurrencyPool] = useState([]);
 
+    const[cachedResponse, setCachedResponse] = useState("NONE");
+
     function formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData) {
         for (let i = targetDestinationCurrencies.length; i < 6; i++) {
             currencyVisualizationData.destinationCurrencies.push({
@@ -40,91 +42,102 @@ const useCurrencyManager = (props) => {
         }
     }
 
+    function processCurrencyData(response) {
+        let responseBaseCurrency = response.data.main;
+        let responseRateMap = {};
+        let responseCurrencyPool = [];
+        response.data.rates.forEach(rate => {
+            responseRateMap[rate.den] = {
+                entity: rate.den,
+                value: parseFloat(rate.rt),
+                dailyChange: parseFloat(rate.dChg),
+                dailyChangeRate: parseFloat(rate.dChgR)
+            };
+            responseCurrencyPool.push({key: rate.den, text: rate.den, value: rate.den});
+        });
+
+        responseCurrencyPool.sort(function (a, b) {
+            let textA = a.key.toUpperCase();
+            let textB = b.key.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        });
+
+        setSelectableCurrencyPool(responseCurrencyPool);
+
+        let targetSourceCurrency = currencyDisplaySource;
+        let targetDestinationCurrencies = currencyDisplayDestinations;
+
+        let currencyVisualizationData = {type: "", sourceCurrency: {entity: ""}, destinationCurrencies: []};
+        currencyVisualizationData.type = currencyDisplayType;
+        if (targetSourceCurrency === responseBaseCurrency) {
+            currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+
+            targetDestinationCurrencies.forEach((value) => {
+                if (value in responseRateMap) {
+                    currencyVisualizationData.destinationCurrencies.push({
+                        entity: responseRateMap[value].entity,
+                        value: responseRateMap[value].value,
+                        dailyChange: responseRateMap[value].dailyChange,
+                        dailyChangeRate: responseRateMap[value].dailyChangeRate,
+                    });
+                }
+
+            });
+
+            formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
+
+        } else if (targetSourceCurrency in responseRateMap) {
+            currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+
+            let convertedRateMap = {};
+            let currencyConverter = responseRateMap[targetSourceCurrency].value;
+            let currencyConverterPrevious = responseRateMap[targetSourceCurrency].value - responseRateMap[targetSourceCurrency].dailyChange;
+            response.data.rates.forEach(rate => {
+                let value = parseFloat(rate.rt) / currencyConverter;
+                let previousValue = parseFloat(rate.rt) - parseFloat(rate.dChg);
+                let previousRate = 1 / (currencyConverterPrevious / previousValue);
+                convertedRateMap[rate.den] = {
+                    entity: rate.den,
+                    value: value,
+                    dailyChange: value - previousRate,
+                    dailyChangeRate: (value - previousRate) / value
+                };
+            });
+            currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
+
+            targetDestinationCurrencies.forEach((value) => {
+                currencyVisualizationData.destinationCurrencies.push({
+                    entity: convertedRateMap[value].entity,
+                    value: convertedRateMap[value].value,
+                    dailyChange: convertedRateMap[value].dailyChange,
+                    dailyChangeRate: convertedRateMap[value].dailyChangeRate,
+                });
+            });
+
+            formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
+
+
+        }
+        return currencyVisualizationData;
+    }
+
     useEffect(() => {
         async function fetchCurrencyData() {
-            axios.get(`http://localhost:8080/currency`).then(response => {
-
-                let responseBaseCurrency = response.data.main;
-                let responseRateMap = {};
-                let responseCurrencyPool = [];
-                response.data.rates.forEach(rate => {
-                    responseRateMap[rate.den] = {
-                        entity: rate.den,
-                        value: parseFloat(rate.rt),
-                        dailyChange: parseFloat(rate.dChg),
-                        dailyChangeRate: parseFloat(rate.dChgR)
-                    };
-                    responseCurrencyPool.push({key: rate.den, text: rate.den, value: rate.den});
-                });
-
-                responseCurrencyPool.sort(function (a, b) {
-                    let textA = a.key.toUpperCase();
-                    let textB = b.key.toUpperCase();
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                });
-
-                setSelectableCurrencyPool(responseCurrencyPool);
-
-                let targetSourceCurrency = currencyDisplaySource;
-                let targetDestinationCurrencies = currencyDisplayDestinations;
-
-                let currencyVisualizationData = {type: "", sourceCurrency: {entity: ""}, destinationCurrencies: []};
-                currencyVisualizationData.type = currencyDisplayType;
-                if (targetSourceCurrency === responseBaseCurrency) {
-                    currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
-
-                    targetDestinationCurrencies.forEach((value) => {
-                        if (value in responseRateMap) {
-                            currencyVisualizationData.destinationCurrencies.push({
-                                entity: responseRateMap[value].entity,
-                                value: responseRateMap[value].value,
-                                dailyChange: responseRateMap[value].dailyChange,
-                                dailyChangeRate: responseRateMap[value].dailyChangeRate,
-                            });
-                        }
-
-                    });
-
-                    formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
-
-                } else if (targetSourceCurrency in responseRateMap) {
-                    currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
-
-                    let convertedRateMap = {};
-                    let currencyConverter = responseRateMap[targetSourceCurrency].value;
-                    let currencyConverterPrevious = responseRateMap[targetSourceCurrency].value - responseRateMap[targetSourceCurrency].dailyChange;
-                    response.data.rates.forEach(rate => {
-                        let value = parseFloat(rate.rt) / currencyConverter;
-                        let previousValue = parseFloat(rate.rt) - parseFloat(rate.dChg);
-                        let previousRate = 1 / (currencyConverterPrevious / previousValue);
-                        convertedRateMap[rate.den] = {
-                            entity: rate.den,
-                            value: value,
-                            dailyChange: value - previousRate,
-                            dailyChangeRate: (value - previousRate) / value
-                        };
-                    });
-                    currencyVisualizationData.sourceCurrency.entity = targetSourceCurrency;
-
-                    targetDestinationCurrencies.forEach((value) => {
-                        currencyVisualizationData.destinationCurrencies.push({
-                            entity: convertedRateMap[value].entity,
-                            value: convertedRateMap[value].value,
-                            dailyChange: convertedRateMap[value].dailyChange,
-                            dailyChangeRate: convertedRateMap[value].dailyChangeRate,
-                        });
-                    });
-
-                    formatEmptyCurrencySlots(targetDestinationCurrencies, currencyVisualizationData);
-
-
-                }
+            if(cachedResponse !== "NONE") {
+                let currencyVisualizationData = processCurrencyData(cachedResponse);
                 setCurrencyVisualizationData(currencyVisualizationData);
-            });
+            } else {
+                axios.get(`https://6go81wuc8k.execute-api.us-east-2.amazonaws.com/default/GetCurrency`).then(response => {
+                    let currencyVisualizationData = processCurrencyData(response);
+                    setCurrencyVisualizationData(currencyVisualizationData);
+                    setCachedResponse(response);
+                });
+            }
+
         }
 
         fetchCurrencyData();
-    }, [props, currencyDisplaySource, currencyDisplayDestinations, currencyDisplayType]);
+    }, [props, currencyDisplaySource, currencyDisplayDestinations, currencyDisplayType, cachedResponse]);
     return {
         currencyVisualizationData,
         selectableCurrencyPool,
@@ -196,6 +209,8 @@ const CurrencyManager = (props) => {
                 defaultUnitPolygon={defaultUnitPolygon}
             />
             }
+
+
 
             <CurrencySearchSelection setValue={setCurrencyDisplaySource}
                                      options={selectableCurrencyPool}
