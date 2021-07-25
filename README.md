@@ -1,10 +1,26 @@
 # exchange-ui
 <img align="right" src="https://user-images.githubusercontent.com/28985966/126894665-7fca192f-98bb-47fa-8849-d09c1d50a90e.png">
+
 Exchange rate dashboard with React. Based on a hexagon grid display system.
 
 [Link to app](https://www.exchange-ui.com/)(coldstart may cause loading delays)
 
 [Link to backend repo](https://github.com/hsynercn/exchange-provider-aws)
+
+App has 3 grid layouts
+* Basic: For smaller devices
+* Hexagonal: For larger screens
+* Wide: Hexagonal with full grid
+ 
+Hexagonal layout looks better with wide resolutions, basic layout is more handy on mobile.
+
+For grid view I designed two components. **RegularConvexPolygon** is the unit component for hexagon form, it contains two <polygon> elements and a text. Other componenet is the  **PolygonGroup**, it manages the grid layout.
+
+**PolygonUtil** covers the basic math for regular convex polygon generation.
+  
+**Note:** App does NOT use real-time financial data. Real time forex data is not a free thing and redistributing it without a license can cause legal issues.
+
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
