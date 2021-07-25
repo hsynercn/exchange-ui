@@ -1,6 +1,6 @@
 # exchange-ui
 <img align="right" src="https://user-images.githubusercontent.com/28985966/126894665-7fca192f-98bb-47fa-8849-d09c1d50a90e.png">
-Exchange rate dashboard with React. 
+Exchange rate dashboard with React. Based on a hexagon grid display system.
 
 [Link to app](https://www.exchange-ui.com/)(coldstart may cause loading delays)
 
