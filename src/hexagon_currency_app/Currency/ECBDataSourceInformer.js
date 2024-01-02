@@ -3,7 +3,8 @@ const ECBDataSourceInformer = (props) => {
     return (
         <div style={{
             width: "90%",
-            margin: "1% auto"
+            margin: "1% auto",
+            paddingBottom: "1%",
         }}>
             <p>
                 Financial data source of this site is the European Central Bank, and shared information

@@ -23,7 +23,7 @@ const useCurrencyManager = (props) => {
     const [currencyDisplayType, setCurrencyDisplayType] = useState(temp.key);
 
     const [currencyDisplaySource, setCurrencyDisplaySource] = useState("USD");
-    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "HRK"]);
+    const [currencyDisplayDestinations, setCurrencyDisplayDestinations] = useState(["TRY", "EUR", "GBP", "JPY", "CNY", "NOK"]);
     const [currencyVisualizationData, setCurrencyVisualizationData] = useState({
         sourceCurrency: {entity: currencyDisplaySource},
         destinationCurrencies: []
